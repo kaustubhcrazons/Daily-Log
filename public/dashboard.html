@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Task Manager</title>
+</head>
+<body>
+
+<h2>Daily Task</h2>
+
+<div id="tasks"></div>
+
+<button onclick="submitTask()">Submit</button>
+
+<script>
+const user = JSON.parse(localStorage.getItem("user"));
+
+async function loadTasks() {
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  console.log("USER:", user); // 👈 ADD THIS
+
+  const res = await fetch(`/tasks/${user.id}`);
+  const tasks = await res.json();
+
+  console.log("TASKS:", tasks); // 👈 ADD THIS
+
+  const container = document.getElementById("tasks");
+  container.innerHTML = "";
+
+  tasks.forEach(task => {
+    const div = document.createElement("div");
+
+    div.innerHTML = `
+      <p><b>${task}</b></p>
+      <input type="number" placeholder="Hours" class="hrs">
+      <input type="number" placeholder="Minutes" class="mins">
+    `;
+
+    container.appendChild(div);
+  });
+}
+async function submitTask() {
+  const rows = document.querySelectorAll("#tasks div");
+
+  let tasks = [];
+
+  rows.forEach(row => {
+    const task = row.querySelector("p").innerText;
+    const hrs = parseInt(row.querySelector(".hrs").value) || 0;
+    const mins = parseInt(row.querySelector(".mins").value) || 0;
+
+    if (hrs || mins) {
+      tasks.push({ task, hrs, mins });
+    }
+  });
+
+  await fetch('/submit', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+  name: user.id,
+  tasks
+})
+  });
+
+  alert("Saved!");
+}
+
+loadTasks();
+</script>
+</body>
+</html>
