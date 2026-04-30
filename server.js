@@ -1,12 +1,18 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
-const XLSX = require('xlsx');
+const fetch = require('node-fetch');
 
 const app = express();
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
+const PORT = process.env.PORT || 3000;
+
+// 👉 YOUR APPS SCRIPT URL
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxpaOYcH5UHI60zyM_t3P1e5Wb4fU1r_dHrh5xFBMOFrePcDB5qQzVAV-UXUKob8Ux6lQ/exec";
+
+// ================= LOGIN =================
 const users = JSON.parse(fs.readFileSync('users.json'));
 
 app.post('/login', (req, res) => {
@@ -21,115 +27,50 @@ app.post('/login', (req, res) => {
   }
 });
 
-app.post('/submit', (req, res) => {
+// ================= GET TASKS =================
+app.get('/tasks/:name', async (req, res) => {
+  try {
+    const user = req.params.name;
+
+    const response = await fetch(`${SCRIPT_URL}?type=tasks&user=${user}`);
+    const data = await response.json();
+
+    res.json(data);
+  } catch (err) {
+    console.error("TASK FETCH ERROR:", err);
+    res.status(500).send("Error fetching tasks");
+  }
+});
+
+// ================= SUBMIT TASK =================
+app.post('/submit', async (req, res) => {
   try {
     const { name, tasks } = req.body;
 
-    const filePath = 'tasks.xlsx';
-    let workbook;
-
-    if (fs.existsSync(filePath)) {
-      workbook = XLSX.readFile(filePath);
-    } else {
-      workbook = XLSX.utils.book_new();
-    }
-
-    let data = [];
-
-    // If user sheet exists → load it
-    if (workbook.Sheets[name]) {
-      data = XLSX.utils.sheet_to_json(workbook.Sheets[name]);
-    }
-
-    const today = new Date().toISOString().split('T')[0];
-
-    // Add all tasks
-   tasks.forEach(t => {
-  const totalMinutes = (t.hrs * 60) + t.mins;
-
-  data.push({
-    Date: today,
-    Task: t.task,
-    Hours: t.hrs,
-    Minutes: t.mins,
-    Total_Minutes: totalMinutes,
-    Timestamp: new Date().toLocaleString()
-  });
-});
-    const newSheet = XLSX.utils.json_to_sheet(data);
-
-    workbook.Sheets[name] = newSheet;
-
-    if (!workbook.SheetNames.includes(name)) {
-      workbook.SheetNames.push(name);
-    }
-
-    XLSX.writeFile(workbook, filePath);
+    await fetch(SCRIPT_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        user: name,
+        tasks
+      })
+    });
 
     res.send("Saved");
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Error");
-  }
-});
-app.get('/admin-data', (req, res) => {
-  try {
-    const filePath = 'tasks.xlsx';
-
-    if (!fs.existsSync(filePath)) {
-      return res.json({});
-    }
-
-    const workbook = XLSX.readFile(filePath);
-    let result = {};
-
-    workbook.SheetNames.forEach(sheetName => {
-      const data = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
-      result[sheetName] = data;
-    });
-
-    res.json(result);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Error");
+    console.error("SUBMIT ERROR:", err);
+    res.status(500).send("Error submitting data");
   }
 });
 
+// ================= HOME =================
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/login.html');
 });
-app.listen(3000, () => {
-  console.log("Server running on port 3000");
-});
-app.post('/assign-task', (req, res) => {
-  const { name, task } = req.body;
 
-  let data = JSON.parse(fs.readFileSync('assignedTasks.json'));
-
-  if (!data[name]) {
-    data[name] = [];
-  }
-
-  data[name].push(task);
-
-  fs.writeFileSync('assignedTasks.json', JSON.stringify(data, null, 2));
-
-  res.send("Task assigned");
-});
-app.post('/remove-task', (req, res) => {
-  const { name, task } = req.body;
-
-  let data = JSON.parse(fs.readFileSync('assignedTasks.json'));
-
-  data[name] = data[name].filter(t => t !== task);
-
-  fs.writeFileSync('assignedTasks.json', JSON.stringify(data, null, 2));
-
-  res.send("Task removed");
-});
-app.get('/tasks/:name', (req, res) => {
-  const data = JSON.parse(fs.readFileSync('assignedTasks.json'));
-  const name = req.params.name;
-
-  res.json(data[name] || []);
+// ================= START SERVER =================
+app.listen(PORT, () => {
+  console.log("Server running on port", PORT);
 });
