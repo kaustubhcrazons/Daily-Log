@@ -18,8 +18,8 @@ async function loadTasks() {
   const user = JSON.parse(localStorage.getItem("user"));
 
   console.log("USER:", user); // 👈 ADD THIS
-console.log("API URL:", `https://script.google.com/macros/s/AKfycbySRNfQtohYKnpKo3aAveu3nt6k95ULSEIZf_GebNLVMYSmGVQ_8AJD6A5Gtx0NAfZplg/exec?type=tasks&user=${user.id}`);
- const res = await fetch(`https://script.google.com/macros/s/AKfycbySRNfQtohYKnpKo3aAveu3nt6k95ULSEIZf_GebNLVMYSmGVQ_8AJD6A5Gtx0NAfZplg/exec?type=tasks&user=${user.id}`);
+console.log("API URL:", `https://script.google.com/macros/s/AKfycbyTesDLv0ejgSohfMUY1Pc2Gw0TzsZme-bq85cbT8KFiKIz-m-NuE5zEqNuP4djQ8ISjA/exec?type=tasks&user=${user.id}`);
+ const res = await fetch(`https://script.google.com/macros/s/AKfycbyTesDLv0ejgSohfMUY1Pc2Gw0TzsZme-bq85cbT8KFiKIz-m-NuE5zEqNuP4djQ8ISjA/exec?type=tasks&user=${user.id}`);
   const tasks = await res.json();
 
   console.log("TASKS:", tasks); // 👈 ADD THIS
@@ -54,7 +54,7 @@ async function submitTask() {
     }
   });
 
- await fetch("https://script.google.com/macros/s/AKfycbySRNfQtohYKnpKo3aAveu3nt6k95ULSEIZf_GebNLVMYSmGVQ_8AJD6A5Gtx0NAfZplg/exec", {
+ await fetch("https://script.google.com/macros/s/AKfycbyTesDLv0ejgSohfMUY1Pc2Gw0TzsZme-bq85cbT8KFiKIz-m-NuE5zEqNuP4djQ8ISjA/exec", {
   method: "POST",
   body: JSON.stringify({
     user: user.id,
