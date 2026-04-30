@@ -32,13 +32,23 @@ app.get('/tasks/:name', async (req, res) => {
   try {
     const user = req.params.name;
 
+    if (!user) {
+      return res.status(400).json({ error: "User missing" });
+    }
+
     const response = await fetch(`${SCRIPT_URL}?type=tasks&user=${user}`);
+
+    if (!response.ok) {
+      throw new Error("Apps Script failed");
+    }
+
     const data = await response.json();
 
     res.json(data);
+
   } catch (err) {
     console.error("TASK FETCH ERROR:", err);
-    res.status(500).send("Error fetching tasks");
+    res.status(500).json({ error: "Failed to fetch tasks" });
   }
 });
 
@@ -47,21 +57,31 @@ app.post('/submit', async (req, res) => {
   try {
     const { name, tasks } = req.body;
 
-    await fetch(SCRIPT_URL, {
+    if (!name || !tasks || tasks.length === 0) {
+      return res.status(400).json({ error: "Invalid data" });
+    }
+
+    const response = await fetch(SCRIPT_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
+        action: "submit",
         user: name,
         tasks
       })
     });
 
-    res.send("Saved");
+    if (!response.ok) {
+      throw new Error("Apps Script failed");
+    }
+
+    res.json({ success: true });
+
   } catch (err) {
     console.error("SUBMIT ERROR:", err);
-    res.status(500).send("Error submitting data");
+    res.status(500).json({ error: "Failed to submit data" });
   }
 });
 
