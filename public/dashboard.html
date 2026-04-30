@@ -19,13 +19,13 @@ async function loadTasks() {
 
   console.log("USER:", user); // 👈 ADD THIS
 
-  const res = await fetch(`/tasks/${user.id}`);
+ const res = await fetch(`https://script.google.com/macros/s/AKfycbySRNfQtohYKnpKo3aAveu3nt6k95ULSEIZf_GebNLVMYSmGVQ_8AJD6A5Gtx0NAfZplg/exec?type=tasks&user=${user.id}`);
   const tasks = await res.json();
 
   console.log("TASKS:", tasks); // 👈 ADD THIS
 
   const container = document.getElementById("tasks");
-  container.innerHTML = "";
+  container.innerHTML = "";     
 
   tasks.forEach(task => {
     const div = document.createElement("div");
@@ -54,15 +54,13 @@ async function submitTask() {
     }
   });
 
-  await fetch('/submit', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-  name: user.id,
-  tasks
-})
-  });
-
+ await fetch("https://script.google.com/macros/s/AKfycbySRNfQtohYKnpKo3aAveu3nt6k95ULSEIZf_GebNLVMYSmGVQ_8AJD6A5Gtx0NAfZplg/exec", {
+  method: "POST",
+  body: JSON.stringify({
+    user: user.id,
+    tasks
+  })
+});
   alert("Saved!");
 }
 
