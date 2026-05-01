@@ -78,3 +78,17 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
   console.log("Server running on port", PORT);
 });
+app.get('/task-summary/:user', async (req, res) => {
+  try {
+    const user = req.params.user;
+
+    const response = await fetch(`${SCRIPT_URL}?type=taskSummary&user=${user}`);
+    const data = await response.json();
+
+    res.json(data);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed" });
+  }
+});

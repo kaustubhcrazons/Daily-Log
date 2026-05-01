@@ -73,23 +73,38 @@
   <h3>Assigned Tasks</h3>
   <div id="assigned"></div>
 </div>
+<div class="card">
+  <h3>Task-wise Summary (This Month)</h3>
+  <div id="taskSummary"></div>
+</div>
 
 <script>
 
 // 🔹 LOAD TASKS BASED ON DROPDOWN
-async function loadAssigned() {
+async function loadTaskSummary() {
   const user = document.getElementById("user").value;
 
-  const res = await fetch(`/tasks/${user}`);
+  const res = await fetch(`/task-summary/${user}`);
   const data = await res.json();
 
-  const container = document.getElementById("assigned");
+  const container = document.getElementById("taskSummary");
 
-  if (Array.isArray(data) && data.length > 0) {
-    container.innerHTML = data.map(t => `<p>• ${t}</p>`).join("");
-  } else {
-    container.innerHTML = "<p>No tasks assigned</p>";
+  if (Object.keys(data).length === 0) {
+    container.innerHTML = "<p>No data</p>";
+    return;
   }
+
+  let html = "";
+
+  for (let task in data) {
+    html += `
+      <p>
+        <b>${task}</b> → ${data[task].hrs} hrs ${data[task].mins} mins
+      </p>
+    `;
+  }
+
+  container.innerHTML = html;
 }
 
 // 🔹 ASSIGN TASK
