@@ -9,8 +9,8 @@ app.use(express.static('public'));
 
 const PORT = process.env.PORT || 3000;
 
-// 👉 YOUR APPS SCRIPT URL
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxozoKbfjIq7qrlXdPcINUejJ0U-f98WuPcJFmlRqnoEZc4iKv0TgeXPFappptFaD1Ikg/exec";
+// 🔗 YOUR APPS SCRIPT URL
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxDjpJLAx02qM4egtOXv7m2OUg2VKV_4VWNJxEY9wfxRMkcJiJIVq9fpVqQmSxTqkQG-g/exec";
 
 // ================= LOGIN =================
 const users = JSON.parse(fs.readFileSync('users.json'));
@@ -32,56 +32,44 @@ app.get('/tasks/:name', async (req, res) => {
   try {
     const user = req.params.name;
 
-    if (!user) {
-      return res.status(400).json({ error: "User missing" });
-    }
-
     const response = await fetch(`${SCRIPT_URL}?type=tasks&user=${user}`);
+    const text = await response.text();
 
-    if (!response.ok) {
-      throw new Error("Apps Script failed");
+    try {
+      const data = JSON.parse(text);
+      res.json(data);
+    } catch {
+      console.error("INVALID RESPONSE:", text);
+      res.status(500).json({ error: "Invalid response" });
     }
-
-    const data = await response.json();
-
-    res.json(data);
 
   } catch (err) {
-    console.error("TASK FETCH ERROR:", err);
+    console.error(err);
     res.status(500).json({ error: "Failed to fetch tasks" });
   }
 });
 
-// ================= SUBMIT TASK =================
+// ================= SUBMIT / ASSIGN / REMOVE =================
 app.post('/submit', async (req, res) => {
   try {
-    const { name, tasks } = req.body;
-
-    if (!name || !tasks || tasks.length === 0) {
-      return res.status(400).json({ error: "Invalid data" });
-    }
+    const body = req.body;
 
     const response = await fetch(SCRIPT_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        action: "submit",
-        user: name,
-        tasks
-      })
+      body: JSON.stringify(body)
     });
 
-    if (!response.ok) {
-      throw new Error("Apps Script failed");
-    }
+    const result = await response.text();
+    console.log("Apps Script:", result);
 
     res.json({ success: true });
 
   } catch (err) {
-    console.error("SUBMIT ERROR:", err);
-    res.status(500).json({ error: "Failed to submit data" });
+    console.error(err);
+    res.status(500).json({ error: "Failed" });
   }
 });
 
@@ -90,7 +78,7 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/login.html');
 });
 
-// ================= START SERVER =================
+// ================= START =================
 app.listen(PORT, () => {
   console.log("Server running on port", PORT);
 });

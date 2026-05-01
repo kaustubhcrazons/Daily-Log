@@ -14,15 +14,12 @@
 <script>
 const user = JSON.parse(localStorage.getItem("user"));
 
-// ================= LOAD TASKS =================
+// LOAD TASKS
 async function loadTasks() {
-  console.log("USER:", user);
-
-  // ✅ CALL NODE (NOT GOOGLE)
   const res = await fetch(`/tasks/${user.id}`);
-  const tasks = await res.json();
+  const data = await res.json();
 
-  console.log("TASKS:", tasks);
+  const tasks = Array.isArray(data) ? data : [];
 
   const container = document.getElementById("tasks");
   container.innerHTML = "";
@@ -40,7 +37,7 @@ async function loadTasks() {
   });
 }
 
-// ================= SUBMIT =================
+// SUBMIT
 async function submitTask() {
   const rows = document.querySelectorAll("#tasks div");
 
@@ -56,12 +53,12 @@ async function submitTask() {
     }
   });
 
-  // ✅ CALL NODE (NOT GOOGLE)
   await fetch('/submit', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      name: user.id,
+      action: "submit",
+      user: user.id,
       tasks
     })
   });
