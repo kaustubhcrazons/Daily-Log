@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
-const fetch = require('node-fetch');
+
 
 const app = express();
 app.use(bodyParser.json());
@@ -35,16 +35,14 @@ app.get('/tasks/:name', async (req, res) => {
     const response = await fetch(`${SCRIPT_URL}?type=tasks&user=${user}`);
     const text = await response.text();
 
-    try {
-      const data = JSON.parse(text);
-      res.json(data);
-    } catch {
-      console.error("INVALID RESPONSE:", text);
-      res.status(500).json({ error: "Invalid response" });
-    }
+    console.log("TASK RAW:", text); // DEBUG
+
+    const data = JSON.parse(text);
+
+    res.json(data);
 
   } catch (err) {
-    console.error(err);
+    console.error("TASK ERROR:", err);
     res.status(500).json({ error: "Failed to fetch tasks" });
   }
 });
@@ -52,19 +50,17 @@ app.get('/tasks/:name', async (req, res) => {
 // ================= SUBMIT / ASSIGN / REMOVE =================
 app.post('/submit', async (req, res) => {
   try {
-    const body = req.body;
-
     const response = await fetch(SCRIPT_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(body)
+      body: JSON.stringify(req.body)
     });
 
     const text = await response.text();
 
-    console.log("APPS SCRIPT RESPONSE:", text); // 👈 IMPORTANT
+    console.log("SUBMIT RAW:", text); // DEBUG
 
     res.json({ success: true });
 
