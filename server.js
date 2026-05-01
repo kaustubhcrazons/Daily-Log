@@ -2,6 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 
+// ✅ FIX: fetch for all environments (Render safe)
+const fetch = (...args) =>
+  import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
 const app = express();
 app.use(bodyParser.json());
@@ -27,15 +30,18 @@ app.post('/login', (req, res) => {
   }
 });
 
-// ================= GET TASKS =================
+// ================= GET ASSIGNED TASKS =================
 app.get('/tasks/:name', async (req, res) => {
   try {
     const user = req.params.name;
 
-    const response = await fetch(`${SCRIPT_URL}?type=tasks&user=${user}`);
+    const url = `${SCRIPT_URL}?type=tasks&user=${user}`;
+    console.log("TASK CALL:", url);
+
+    const response = await fetch(url);
     const text = await response.text();
 
-    console.log("TASK RAW:", text); // DEBUG
+    console.log("TASK RAW:", text);
 
     const data = JSON.parse(text);
 
@@ -60,7 +66,7 @@ app.post('/submit', async (req, res) => {
 
     const text = await response.text();
 
-    console.log("SUBMIT RAW:", text); // DEBUG
+    console.log("SUBMIT RAW:", text);
 
     res.json({ success: true });
 
@@ -69,6 +75,30 @@ app.post('/submit', async (req, res) => {
     res.status(500).json({ error: "Failed" });
   }
 });
+
+// ================= TASK SUMMARY =================
+app.get('/task-summary/:user', async (req, res) => {
+  try {
+    const user = req.params.user;
+
+    const url = `${SCRIPT_URL}?type=taskSummary&user=${user}`;
+    console.log("SUMMARY CALL:", url);
+
+    const response = await fetch(url);
+    const text = await response.text();
+
+    console.log("SUMMARY RAW:", text);
+
+    const data = JSON.parse(text);
+
+    res.json(data);
+
+  } catch (err) {
+    console.error("SUMMARY ERROR:", err);
+    res.status(500).json({ error: "Failed" });
+  }
+});
+
 // ================= HOME =================
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/login.html');
@@ -77,18 +107,4 @@ app.get('/', (req, res) => {
 // ================= START =================
 app.listen(PORT, () => {
   console.log("Server running on port", PORT);
-});
-app.get('/task-summary/:user', async (req, res) => {
-  try {
-    const user = req.params.user;
-
-    const response = await fetch(`${SCRIPT_URL}?type=taskSummary&user=${user}`);
-    const data = await response.json();
-
-    res.json(data);
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed" });
-  }
 });
