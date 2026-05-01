@@ -36,6 +36,10 @@
     button:hover {
       background: #0056b3;
     }
+
+    h2 {
+      margin-bottom: 20px;
+    }
   </style>
 </head>
 <body>
@@ -73,6 +77,8 @@
   <h3>Assigned Tasks</h3>
   <div id="assigned"></div>
 </div>
+
+<!-- 🔹 SUMMARY -->
 <div class="card">
   <h3>Task-wise Summary (This Month)</h3>
   <div id="taskSummary"></div>
@@ -80,34 +86,71 @@
 
 <script>
 
-// 🔹 LOAD TASKS BASED ON DROPDOWN
+//
+// 🔹 LOAD ASSIGNED TASKS + SUMMARY
+//
+async function loadAssigned() {
+  const user = document.getElementById("user").value;
+
+  try {
+    const res = await fetch(`/tasks/${user}`);
+    const data = await res.json();
+
+    const container = document.getElementById("assigned");
+
+    if (Array.isArray(data) && data.length > 0) {
+      container.innerHTML = data.map(t => `<p>• ${t}</p>`).join("");
+    } else {
+      container.innerHTML = "<p>No tasks assigned</p>";
+    }
+
+    // 👉 Load summary after tasks
+    loadTaskSummary();
+
+  } catch (err) {
+    console.error(err);
+    document.getElementById("assigned").innerHTML = "Error loading tasks";
+  }
+}
+
+//
+// 🔹 LOAD TASK SUMMARY
+//
 async function loadTaskSummary() {
   const user = document.getElementById("user").value;
 
-  const res = await fetch(`/task-summary/${user}`);
-  const data = await res.json();
+  try {
+    const res = await fetch(`/task-summary/${user}`);
+    const data = await res.json();
 
-  const container = document.getElementById("taskSummary");
+    const container = document.getElementById("taskSummary");
 
-  if (Object.keys(data).length === 0) {
-    container.innerHTML = "<p>No data</p>";
-    return;
+    if (!data || Object.keys(data).length === 0) {
+      container.innerHTML = "<p>No data</p>";
+      return;
+    }
+
+    let html = "";
+
+    for (let task in data) {
+      html += `
+        <p>
+          <b>${task}</b> → ${data[task].hrs} hrs ${data[task].mins} mins
+        </p>
+      `;
+    }
+
+    container.innerHTML = html;
+
+  } catch (err) {
+    console.error(err);
+    document.getElementById("taskSummary").innerHTML = "Error loading summary";
   }
-
-  let html = "";
-
-  for (let task in data) {
-    html += `
-      <p>
-        <b>${task}</b> → ${data[task].hrs} hrs ${data[task].mins} mins
-      </p>
-    `;
-  }
-
-  container.innerHTML = html;
 }
 
+//
 // 🔹 ASSIGN TASK
+//
 async function assign() {
   const user = document.getElementById("user").value;
   const task = document.getElementById("task").value;
@@ -126,10 +169,13 @@ async function assign() {
 
   alert("Task Assigned");
   document.getElementById("task").value = "";
+
   loadAssigned();
 }
 
+//
 // 🔹 REMOVE TASK
+//
 async function removeTask() {
   const user = document.getElementById("user").value;
   const task = document.getElementById("task2").value;
@@ -148,11 +194,16 @@ async function removeTask() {
 
   alert("Task Removed");
   document.getElementById("task2").value = "";
+
   loadAssigned();
 }
 
-// INITIAL LOAD
-loadAssigned();
+//
+// 🔹 INITIAL LOAD
+//
+window.onload = () => {
+  loadAssigned();
+};
 
 </script>
 
