@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>Admin Dashboard</title>
+
   <style>
     body {
       font-family: Arial;
@@ -17,7 +18,7 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
-    input, select {
+    select, input {
       padding: 8px;
       margin: 5px;
       width: 200px;
@@ -35,40 +36,39 @@
     button:hover {
       background: #0056b3;
     }
-
-    h2 {
-      margin-bottom: 20px;
-    }
   </style>
 </head>
 <body>
 
 <h2>Admin Dashboard</h2>
 
+<!-- 🔹 SELECT USER -->
 <div class="card">
-  <h3>Assign Task</h3>
+  <h3>Select Employee</h3>
 
-  <select id="user">
+  <select id="user" onchange="loadAssigned()">
     <option value="emp1">emp1</option>
     <option value="emp2">emp2</option>
   </select>
+</div>
+
+<!-- 🔹 ASSIGN -->
+<div class="card">
+  <h3>Assign Task</h3>
 
   <input id="task" placeholder="Task name">
   <button onclick="assign()">Assign</button>
 </div>
 
+<!-- 🔹 REMOVE -->
 <div class="card">
   <h3>Remove Task</h3>
-
-  <select id="user2">
-    <option value="emp1">emp1</option>
-    <option value="emp2">emp2</option>
-  </select>
 
   <input id="task2" placeholder="Task name">
   <button onclick="removeTask()">Remove</button>
 </div>
 
+<!-- 🔹 TASK LIST -->
 <div class="card">
   <h3>Assigned Tasks</h3>
   <div id="assigned"></div>
@@ -76,6 +76,7 @@
 
 <script>
 
+// 🔹 LOAD TASKS BASED ON DROPDOWN
 async function loadAssigned() {
   const user = document.getElementById("user").value;
 
@@ -87,13 +88,16 @@ async function loadAssigned() {
   if (Array.isArray(data) && data.length > 0) {
     container.innerHTML = data.map(t => `<p>• ${t}</p>`).join("");
   } else {
-    container.innerHTML = "<p>No tasks</p>";
+    container.innerHTML = "<p>No tasks assigned</p>";
   }
 }
 
+// 🔹 ASSIGN TASK
 async function assign() {
   const user = document.getElementById("user").value;
   const task = document.getElementById("task").value;
+
+  if (!task) return alert("Enter task");
 
   await fetch('/submit', {
     method: 'POST',
@@ -106,12 +110,16 @@ async function assign() {
   });
 
   alert("Task Assigned");
+  document.getElementById("task").value = "";
   loadAssigned();
 }
 
+// 🔹 REMOVE TASK
 async function removeTask() {
-  const user = document.getElementById("user2").value;
+  const user = document.getElementById("user").value;
   const task = document.getElementById("task2").value;
+
+  if (!task) return alert("Enter task");
 
   await fetch('/submit', {
     method: 'POST',
@@ -124,9 +132,11 @@ async function removeTask() {
   });
 
   alert("Task Removed");
+  document.getElementById("task2").value = "";
   loadAssigned();
 }
 
+// INITIAL LOAD
 loadAssigned();
 
 </script>
