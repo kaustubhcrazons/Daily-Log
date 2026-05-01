@@ -2,19 +2,63 @@
 <html>
 <head>
   <title>Task Manager</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .task {
+      margin-bottom: 15px;
+    }
+
+    input {
+      padding: 8px;
+      margin-right: 5px;
+      width: 80px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1e7e34;
+    }
+  </style>
 </head>
 <body>
 
 <h2>Daily Task</h2>
 
-<div id="tasks"></div>
+<div class="card">
+  <div id="tasks"></div>
+</div>
 
 <button onclick="submitTask()">Submit</button>
 
 <script>
 const user = JSON.parse(localStorage.getItem("user"));
 
-// LOAD TASKS
 async function loadTasks() {
   const res = await fetch(`/tasks/${user.id}`);
   const data = await res.json();
@@ -24,22 +68,27 @@ async function loadTasks() {
   const container = document.getElementById("tasks");
   container.innerHTML = "";
 
+  if (tasks.length === 0) {
+    container.innerHTML = "<p>No tasks assigned</p>";
+    return;
+  }
+
   tasks.forEach(task => {
     const div = document.createElement("div");
+    div.className = "task";
 
     div.innerHTML = `
       <p><b>${task}</b></p>
-      <input type="number" placeholder="Hours" class="hrs">
-      <input type="number" placeholder="Minutes" class="mins">
+      <input type="number" placeholder="Hrs" class="hrs">
+      <input type="number" placeholder="Min" class="mins">
     `;
 
     container.appendChild(div);
   });
 }
 
-// SUBMIT
 async function submitTask() {
-  const rows = document.querySelectorAll("#tasks div");
+  const rows = document.querySelectorAll(".task");
 
   let tasks = [];
 
