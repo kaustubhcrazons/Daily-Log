@@ -10,7 +10,7 @@ app.use(express.static('public'));
 const PORT = process.env.PORT || 3000;
 
 // 🔗 YOUR APPS SCRIPT URL
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxDjpJLAx02qM4egtOXv7m2OUg2VKV_4VWNJxEY9wfxRMkcJiJIVq9fpVqQmSxTqkQG-g/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyX4E0PlUfm2dnQAaNnbX-PzEJpogIp1RETnu1aoo-HAchK0WQs_q6AyKTmAuHjJisSBQ/exec";
 
 // ================= LOGIN =================
 const users = JSON.parse(fs.readFileSync('users.json'));
@@ -62,17 +62,17 @@ app.post('/submit', async (req, res) => {
       body: JSON.stringify(body)
     });
 
-    const result = await response.text();
-    console.log("Apps Script:", result);
+    const text = await response.text();
+
+    console.log("APPS SCRIPT RESPONSE:", text); // 👈 IMPORTANT
 
     res.json({ success: true });
 
   } catch (err) {
-    console.error(err);
+    console.error("SUBMIT ERROR:", err);
     res.status(500).json({ error: "Failed" });
   }
 });
-
 // ================= HOME =================
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/login.html');
