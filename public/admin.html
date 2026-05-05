@@ -5,9 +5,46 @@
 
   <style>
     body {
+      margin: 0;
       font-family: Arial;
+      background: #f4f6f9;
+      display: flex;
+    }
+
+    /* 🔹 SIDEBAR */
+    .sidebar {
+      width: 220px;
+      background: #111827;
+      color: white;
+      height: 100vh;
       padding: 20px;
-      background: #f5f5f5;
+    }
+
+    .sidebar h2 {
+      font-size: 18px;
+      margin-bottom: 30px;
+    }
+
+    .sidebar p {
+      margin: 10px 0;
+      cursor: pointer;
+      color: #9ca3af;
+    }
+
+    .sidebar p:hover {
+      color: white;
+    }
+
+    /* 🔹 MAIN */
+    .main {
+      flex: 1;
+      padding: 30px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
     }
 
     .card {
@@ -15,80 +52,108 @@
       padding: 20px;
       margin-bottom: 20px;
       border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
 
     select, input {
       padding: 8px;
       margin: 5px;
       width: 200px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
     }
 
     button {
-      padding: 8px 15px;
-      background: #007bff;
+      padding: 10px 18px;
+      background: #2563eb;
       color: white;
       border: none;
-      border-radius: 5px;
+      border-radius: 6px;
       cursor: pointer;
     }
 
     button:hover {
-      background: #0056b3;
+      background: #1e40af;
     }
 
-    h2 {
-      margin-bottom: 20px;
+    .task-item {
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .task-item:last-child {
+      border-bottom: none;
+    }
+
+    .summary-box {
+      background: #eef2ff;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 10px;
     }
   </style>
 </head>
+
 <body>
 
-<h2>Admin Dashboard</h2>
-
-<!-- 🔹 SELECT USER -->
-<div class="card">
-  <h3>Select Employee</h3>
-
-  <select id="user" onchange="loadAssigned()">
-    <option value="emp1">emp1</option>
-    <option value="emp2">emp2</option>
-  </select>
+<!-- 🔹 SIDEBAR -->
+<div class="sidebar">
+  <h2>Admin Panel</h2>
+  <p>Dashboard</p>
+  <p>Employees</p>
+  <p>Reports</p>
 </div>
 
-<!-- 🔹 ASSIGN -->
-<div class="card">
-  <h3>Assign Task</h3>
+<!-- 🔹 MAIN -->
+<div class="main">
 
-  <input id="task" placeholder="Task name">
-  <button onclick="assign()">Assign</button>
-</div>
+  <div class="header">
+    <h2>Admin Dashboard</h2>
+  </div>
 
-<!-- 🔹 REMOVE -->
-<div class="card">
-  <h3>Remove Task</h3>
+  <!-- 🔹 SELECT USER -->
+  <div class="card">
+    <h3>Select Employee</h3>
 
-  <input id="task2" placeholder="Task name">
-  <button onclick="removeTask()">Remove</button>
-</div>
+    <select id="user" onchange="loadAssigned()">
+      <option value="emp1">emp1</option>
+      <option value="emp2">emp2</option>
+    </select>
+  </div>
 
-<!-- 🔹 TASK LIST -->
-<div class="card">
-  <h3>Assigned Tasks</h3>
-  <div id="assigned"></div>
-</div>
+  <!-- 🔹 ASSIGN -->
+  <div class="card">
+    <h3>Assign Task</h3>
 
-<!-- 🔹 SUMMARY -->
-<div class="card">
-  <h3>Task-wise Summary (This Month)</h3>
-  <div id="taskSummary"></div>
+    <input id="task" placeholder="Task name">
+    <button onclick="assign()">Assign</button>
+  </div>
+
+  <!-- 🔹 REMOVE -->
+  <div class="card">
+    <h3>Remove Task</h3>
+
+    <input id="task2" placeholder="Task name">
+    <button onclick="removeTask()">Remove</button>
+  </div>
+
+  <!-- 🔹 ASSIGNED TASKS -->
+  <div class="card">
+    <h3>Assigned Tasks</h3>
+    <div id="assigned"></div>
+  </div>
+
+  <!-- 🔹 SUMMARY -->
+  <div class="card">
+    <h3>Task-wise Summary</h3>
+    <div id="taskSummary"></div>
+  </div>
+
 </div>
 
 <script>
 
-//
 // 🔹 LOAD ASSIGNED TASKS + SUMMARY
-//
 async function loadAssigned() {
   const user = document.getElementById("user").value;
 
@@ -99,12 +164,13 @@ async function loadAssigned() {
     const container = document.getElementById("assigned");
 
     if (Array.isArray(data) && data.length > 0) {
-      container.innerHTML = data.map(t => `<p>• ${t}</p>`).join("");
+      container.innerHTML = data.map(t =>
+        `<div class="task-item">• ${t}</div>`
+      ).join("");
     } else {
       container.innerHTML = "<p>No tasks assigned</p>";
     }
 
-    // 👉 Load summary after tasks
     loadTaskSummary();
 
   } catch (err) {
@@ -113,9 +179,7 @@ async function loadAssigned() {
   }
 }
 
-//
 // 🔹 LOAD TASK SUMMARY
-//
 async function loadTaskSummary() {
   const user = document.getElementById("user").value;
 
@@ -134,9 +198,10 @@ async function loadTaskSummary() {
 
     for (let task in data) {
       html += `
-        <p>
-          <b>${task}</b> → ${data[task].hrs} hrs ${data[task].mins} mins
-        </p>
+        <div class="summary-box">
+          <b>${task}</b><br>
+          ${data[task].hrs} hrs ${data[task].mins} mins
+        </div>
       `;
     }
 
@@ -148,9 +213,7 @@ async function loadTaskSummary() {
   }
 }
 
-//
 // 🔹 ASSIGN TASK
-//
 async function assign() {
   const user = document.getElementById("user").value;
   const task = document.getElementById("task").value;
@@ -169,13 +232,10 @@ async function assign() {
 
   alert("Task Assigned");
   document.getElementById("task").value = "";
-
   loadAssigned();
 }
 
-//
 // 🔹 REMOVE TASK
-//
 async function removeTask() {
   const user = document.getElementById("user").value;
   const task = document.getElementById("task2").value;
@@ -194,13 +254,10 @@ async function removeTask() {
 
   alert("Task Removed");
   document.getElementById("task2").value = "";
-
   loadAssigned();
 }
 
-//
-// 🔹 INITIAL LOAD
-//
+// INITIAL LOAD
 window.onload = () => {
   loadAssigned();
 };
