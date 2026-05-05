@@ -53,7 +53,10 @@
 <div class="card">
   <div id="tasks"></div>
 </div>
-
+<div class="card">
+  <h3>How was your day?</h3>
+  <textarea id="dayNote" rows="4" style="width:100%; padding:10px;" placeholder="Write about your day..."></textarea>
+</div>
 <button onclick="submitTask()">Submit</button>
 
 <script>
@@ -86,7 +89,6 @@ async function loadTasks() {
     container.appendChild(div);
   });
 }
-
 async function submitTask() {
   const rows = document.querySelectorAll(".task");
 
@@ -102,13 +104,16 @@ async function submitTask() {
     }
   });
 
+  const note = document.getElementById("dayNote").value;
+
   await fetch('/submit', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       action: "submit",
       user: user.id,
-      tasks
+      tasks,
+      note
     })
   });
 
