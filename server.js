@@ -108,3 +108,29 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
   console.log("Server running on port", PORT);
 });
+function showEmployees() {
+  const section = document.getElementById("employeeSection");
+  const list = document.getElementById("employeeList");
+
+  section.style.display = "block";
+
+  // 👉 Static list (can upgrade later)
+  const employees = ["emp1", "emp2"];
+
+  list.innerHTML = employees.map(emp => `
+    <div style="
+      padding:10px;
+      margin:5px 0;
+      background:#eef2ff;
+      border-radius:6px;
+      cursor:pointer;
+    " onclick="selectEmployee('${emp}')">
+      ${emp}
+    </div>
+  `).join("");
+}
+function selectEmployee(emp) {
+  document.getElementById("user").value = emp;
+
+  loadAssigned(); // 🔥 reload tasks + summary
+}

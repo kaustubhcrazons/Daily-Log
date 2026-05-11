@@ -100,12 +100,16 @@
 <div class="sidebar">
   <h2>Admin Panel</h2>
   <p>Dashboard</p>
-  <p>Employees</p>
+  <p onclick="showEmployees()">Employees</p>
   <p>Reports</p>
 </div>
 
 <!-- 🔹 MAIN -->
 <div class="main">
+<div class="card" id="employeeSection" style="display:none;">
+  <h3>Employees</h3>
+  <div id="employeeList"></div>
+</div>
 
   <div class="header">
     <h2>Admin Dashboard</h2>
