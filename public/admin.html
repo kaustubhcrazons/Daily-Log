@@ -270,6 +270,52 @@ async function removeTask() {
 window.onload = () => {
   loadAssigned();
 };
+// 🔹 SHOW EMPLOYEE LIST
+//
+function showEmployees() {
+
+  const section = document.getElementById("employeeSection");
+
+  section.style.display = "block";
+
+  const employees = ["emp1", "emp2"];
+
+  const list = document.getElementById("employeeList");
+
+  list.innerHTML = employees.map(emp => `
+    <div 
+      onclick="selectEmployee('${emp}')"
+      style="
+        padding:12px;
+        margin:8px 0;
+        background:#eef2ff;
+        border-radius:8px;
+        cursor:pointer;
+      "
+    >
+      ${emp}
+    </div>
+  `).join("");
+}
+
+//
+// 🔹 SELECT EMPLOYEE
+//
+function selectEmployee(emp) {
+
+  // update dropdown
+  document.getElementById("user").value = emp;
+
+  // reload data
+  loadAssigned();
+}
+
+//
+// 🔹 DASHBOARD VIEW
+//
+function showDashboard() {
+  document.getElementById("employeeSection").style.display = "none";
+}
 
 </script>
 
