@@ -188,7 +188,42 @@
         font-size:18px;
       }
     }
+.task-card{
+  background:white;
+  padding:20px;
+  border-radius:16px;
+  margin-bottom:20px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.08);
+}
 
+.task-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.task-header h3{
+  margin:0;
+  font-size:20px;
+}
+
+.task-header span{
+  background:#eef2ff;
+  color:#4f46e5;
+  padding:6px 12px;
+  border-radius:20px;
+  font-size:13px;
+}
+
+.time-inputs{
+  display:flex;
+  gap:10px;
+  margin-top:15px;
+}
+
+.time-inputs input{
+  flex:1;
+}
   </style>
 </head>
 
@@ -293,23 +328,31 @@ async function loadTasks(){
     return;
   }
 
-  data.forEach(task => {
+  tasks.forEach(task => {
 
-    const div = document.createElement("div");
+  const div = document.createElement("div");
 
-    div.className = "task";
+  div.className = "task-card";
 
-    div.innerHTML = `
-      <p>${task}</p>
+  div.innerHTML = `
 
-      <div class="inputs">
-        <input type="number" placeholder="Hours" class="hrs">
-        <input type="number" placeholder="Minutes" class="mins">
-      </div>
-    `;
+    <div class="task-header">
+      <h3>${task.task}</h3>
+      <span>${task.client}</span>
+    </div>
 
-    container.appendChild(div);
-  });
+    <p>${task.project}</p>
+
+    <div class="time-inputs">
+      <input type="number" placeholder="Hours" class="hrs">
+
+      <input type="number" placeholder="Minutes" class="mins">
+    </div>
+
+  `;
+
+  container.appendChild(div);
+});
 }
 
 async function submitTask(){
