@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
-const fetch = require('node-fetch');
+
 
 // ✅ FIX: fetch for all environments (Render safe)
 const fetch = (...args) =>
