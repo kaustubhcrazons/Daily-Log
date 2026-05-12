@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
+const fetch = require('node-fetch');
 
 // ✅ FIX: fetch for all environments (Render safe)
 const fetch = (...args) =>
@@ -32,13 +33,15 @@ app.post('/login', (req, res) => {
 
 // ================= GET ASSIGNED TASKS =================
 app.get('/tasks/:name', async (req, res) => {
+
   try {
+
     const user = req.params.name;
 
-    const url = `${SCRIPT_URL}?type=tasks&user=${user}`;
-    console.log("TASK CALL:", url);
+    const response = await fetch(
+      `${SCRIPT_URL}?type=tasks&user=${user}`
+    );
 
-    const response = await fetch(url);
     const text = await response.text();
 
     console.log("TASK RAW:", text);
@@ -48,8 +51,12 @@ app.get('/tasks/:name', async (req, res) => {
     res.json(data);
 
   } catch (err) {
+
     console.error("TASK ERROR:", err);
-    res.status(500).json({ error: "Failed to fetch tasks" });
+
+    res.status(500).json({
+      error: err.message
+    });
   }
 });
 
