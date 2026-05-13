@@ -335,23 +335,57 @@ async function loadTasks(){
   div.className = "task-card";
 
   div.innerHTML = `
+  
+    <div style="
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:12px;
+    ">
 
-    <div class="task-header">
-      <h3>${task.task}</h3>
-      <span>${task.client}</span>
+      <div>
+
+        <h3 style="
+          margin-bottom:6px;
+          font-size:20px;
+        ">
+          ${task.task}
+        </h3>
+
+        <p style="
+          color:#64748b;
+          font-size:14px;
+        ">
+          ${task.client} • ${task.project}
+        </p>
+
+      </div>
+
     </div>
 
-    <p>${task.project}</p>
+    <div style="
+      display:flex;
+      gap:12px;
+      margin-top:18px;
+    ">
 
-    <div class="time-inputs">
-      <input type="number" placeholder="Hours" class="hrs">
+      <input
+        type="number"
+        placeholder="Hours"
+        class="hrs"
+      >
 
-      <input type="number" placeholder="Minutes" class="mins">
+      <input
+        type="number"
+        placeholder="Minutes"
+        class="mins"
+      >
+
     </div>
-
   `;
 
   container.appendChild(div);
+
 });
 }
 

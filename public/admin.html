@@ -376,13 +376,26 @@ async function loadAssigned(){
   }
 
   document.getElementById("taskCount").innerText = data.length;
+container.innerHTML = data.map(task => `
+  <div class="task">
 
-  container.innerHTML = data.map(task => `
-    <div class="task">
-      • ${task}
+    <div style="
+      font-size:18px;
+      font-weight:600;
+      margin-bottom:6px;
+    ">
+      ${task.task}
     </div>
-  `).join("");
 
+    <div style="
+      color:#64748b;
+      font-size:14px;
+    ">
+      ${task.client} • ${task.project}
+    </div>
+
+  </div>
+`).join("");
   loadTaskSummary();
 }
 
