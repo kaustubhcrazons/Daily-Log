@@ -358,7 +358,7 @@
     <div class="stat-top">
       <div>
         <p>Total Hours</p>
-        <h2 id="totalHours">128</h2>
+       <h2 id="totalHours">0</h2>
       </div>
 
       <div class="stat-icon">
@@ -610,6 +610,52 @@ function selectEmployee(emp){
 window.onload = () => {
   loadAssigned();
 }
+async function loadTotalHours() {
+
+  const employees = [
+    "Kaustubh",
+    "Viraj",
+    "Virag",
+    "Monika",
+    "Pritam",
+    "Mayur",
+    "Saurabh",
+    "Akash",
+    "Sakshi",
+    "Chetan",
+    "Kunal",
+    "Aniket"
+  ];
+
+  let totalMinutes = 0;
+
+  for (let emp of employees) {
+
+    try {
+
+      const res = await fetch(`/task-summary/${emp}`);
+      const data = await res.json();
+
+      for (let task in data) {
+
+        totalMinutes +=
+          (data[task].hrs * 60) +
+          data[task].mins;
+
+      }
+
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
+  const hrs = Math.floor(totalMinutes / 60);
+
+  document.getElementById("totalHours").innerText = hrs;
+
+}
+
+loadTotalHours();
 
 </script>
 
