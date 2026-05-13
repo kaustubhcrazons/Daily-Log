@@ -278,13 +278,18 @@
 
   <!-- ================= TASKS ================= -->
 
-  <div class="card">
+<div class="card">
 
-    <h3>Today's Tasks</h3>
+  <h2 style="
+    margin-bottom:20px;
+    font-size:32px;
+  ">
+    Today's Tasks
+  </h2>
 
-    <div id="tasks"></div>
+  <div id="tasks"></div>
 
-  </div>
+</div>
 
   <!-- ================= NOTE ================= -->
 
@@ -310,106 +315,96 @@ const user = JSON.parse(localStorage.getItem("user"));
 
 document.getElementById("profileName").innerText = user.id;
 
-async function loadTasks(){
+async function loadTasks() {
+
+  const user = JSON.parse(localStorage.getItem("user"));
 
   const res = await fetch(`/tasks/${user.id}`);
 
-  const data = await res.json();
+  const tasks = await res.json();
+
+  console.log(tasks);
 
   const container = document.getElementById("tasks");
 
-  document.getElementById("taskCount").innerText = data.length;
-
   container.innerHTML = "";
 
-  if(!data.length){
+  if (!tasks.length) {
 
-    container.innerHTML = "<p>No tasks assigned</p>";
+    container.innerHTML = `
+      <p>No tasks assigned</p>
+    `;
+
     return;
   }
 
- tasks.forEach(task => {
+  tasks.forEach(task => {
 
-  const div = document.createElement("div");
+    const div = document.createElement("div");
 
-  div.className = "task-card";
+    div.style = `
+      background:white;
+      border-radius:18px;
+      padding:20px;
+      margin-bottom:16px;
+      box-shadow:0 4px 20px rgba(0,0,0,0.05);
+    `;
 
-  div.style = `
-    background:white;
-    border-radius:18px;
-    padding:20px;
-    margin-bottom:18px;
-    box-shadow:0 4px 20px rgba(0,0,0,0.05);
-  `;
+    div.innerHTML = `
 
-  div.innerHTML = `
+      <h3 style="
+        font-size:20px;
+        margin-bottom:8px;
+      ">
+        ${task.task}
+      </h3>
 
-    <div style="
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:15px;
-    ">
+      <p style="
+        color:#64748b;
+        margin-bottom:18px;
+      ">
+        ${task.client} • ${task.project}
+      </p>
 
-      <div>
+      <div style="
+        display:flex;
+        gap:12px;
+      ">
 
-        <h3 style="
-          font-size:20px;
-          margin-bottom:6px;
-          color:#111827;
-        ">
-          ${task.task}
-        </h3>
+        <input
+          type="number"
+          placeholder="Hours"
+          class="hrs"
+          style="
+            flex:1;
+            padding:12px;
+            border-radius:10px;
+            border:1px solid #dbe2ea;
+          "
+        >
 
-        <p style="
-          color:#64748b;
-          font-size:14px;
-        ">
-          ${task.client} • ${task.project}
-        </p>
+        <input
+          type="number"
+          placeholder="Minutes"
+          class="mins"
+          style="
+            flex:1;
+            padding:12px;
+            border-radius:10px;
+            border:1px solid #dbe2ea;
+          "
+        >
 
       </div>
 
-    </div>
+    `;
 
-    <div style="
-      display:flex;
-      gap:12px;
-      margin-top:18px;
-    ">
+    container.appendChild(div);
 
-      <input
-        type="number"
-        placeholder="Hours"
-        class="hrs"
-        style="
-          flex:1;
-          padding:12px;
-          border-radius:10px;
-          border:1px solid #dbe2ea;
-        "
-      >
+  });
 
-      <input
-        type="number"
-        placeholder="Minutes"
-        class="mins"
-        style="
-          flex:1;
-          padding:12px;
-          border-radius:10px;
-          border:1px solid #dbe2ea;
-        "
-      >
-
-    </div>
-
-  `;
-
-  container.appendChild(div);
-
-});
 }
+
 
 async function submitTask(){
 
