@@ -224,6 +224,71 @@
 .time-inputs input{
   flex:1;
 }
+@media(max-width:900px){
+
+  body{
+    flex-direction:column;
+  }
+
+  .sidebar{
+    width:100%;
+    height:auto;
+    position:relative;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px;
+  }
+
+  .menu{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+
+  .menu-item{
+    font-size:13px;
+    padding:10px 14px;
+  }
+
+  .main{
+    margin-left:0 !important;
+    width:100%;
+    padding:18px;
+  }
+
+  .grid,
+  .stats{
+    grid-template-columns:1fr !important;
+  }
+
+  .topbar{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:15px;
+  }
+
+  .card{
+    padding:18px;
+  }
+
+  input,
+  select,
+  textarea,
+  button{
+    width:100%;
+  }
+
+  .task-header{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:10px;
+  }
+
+  .time-inputs{
+    flex-direction:column;
+  }
+}
   </style>
 </head>
 
@@ -238,6 +303,9 @@
   <div class="menu-item">Dashboard</div>
   <div class="menu-item">Tasks</div>
   <div class="menu-item">Summary</div>
+  <div class="menu-item" onclick="window.location.href='profile.html'">
+  Profile
+</div>
 
 </div>
 
