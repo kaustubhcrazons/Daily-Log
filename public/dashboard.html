@@ -341,6 +341,7 @@ async function loadTasks() {
   tasks.forEach(task => {
 
     const div = document.createElement("div");
+    div.className = "task-card";
 
     div.style = `
       background:white;
@@ -351,53 +352,61 @@ async function loadTasks() {
     `;
 
     div.innerHTML = `
+  <div style="
+    background:white;
+    padding:18px;
+    border-radius:14px;
+    margin-bottom:15px;
+    border:1px solid #eee;
+  ">
 
     <h3 class="task-name" style="
-  font-size:20px;
-  margin-bottom:8px;
-">
-  ${task.task}
-</h3>
+      font-size:20px;
+      margin-bottom:8px;
+    ">
+      ${task.task}
+    </h3>
 
-      <p style="
-        color:#64748b;
-        margin-bottom:18px;
-      ">
-        ${task.client} • ${task.project}
-      </p>
+    <p style="
+      color:#666;
+      margin-bottom:15px;
+    ">
+      ${task.client} • ${task.project}
+    </p>
 
-      <div style="
-        display:flex;
-        gap:12px;
-      ">
+    <div style="
+      display:flex;
+      gap:10px;
+    ">
 
-        <input
-          type="number"
-          placeholder="Hours"
-          class="hrs"
-          style="
-            flex:1;
-            padding:12px;
-            border-radius:10px;
-            border:1px solid #dbe2ea;
-          "
-        >
+      <input
+        type="number"
+        placeholder="Hours"
+        class="hrs"
+        style="
+          flex:1;
+          padding:12px;
+          border-radius:10px;
+          border:1px solid #ccc;
+        "
+      >
 
-        <input
-          type="number"
-          placeholder="Minutes"
-          class="mins"
-          style="
-            flex:1;
-            padding:12px;
-            border-radius:10px;
-            border:1px solid #dbe2ea;
-          "
-        >
+      <input
+        type="number"
+        placeholder="Minutes"
+        class="mins"
+        style="
+          flex:1;
+          padding:12px;
+          border-radius:10px;
+          border:1px solid #ccc;
+        "
+      >
 
-      </div>
+    </div>
 
-    `;
+  </div>
+`;
 
     container.appendChild(div);
 
@@ -411,25 +420,31 @@ async function submitWork() {
 
   const cards = document.querySelectorAll(".task-card");
 
-  const tasks = [];
+  let tasks = [];
 
   cards.forEach(card => {
 
-    const task = card.querySelector(".task-name").innerText;
+    const taskName = card.querySelector(".task-name")?.innerText || "";
 
-    const hrs = card.querySelector(".hrs").value || 0;
+    const hrs = card.querySelector(".hrs")?.value || 0;
 
-    const mins = card.querySelector(".mins").value || 0;
+    const mins = card.querySelector(".mins")?.value || 0;
 
-    tasks.push({
-      task,
-      hrs,
-      mins
-    });
+    if (taskName) {
+
+      tasks.push({
+        task: taskName,
+        hrs: hrs,
+        mins: mins
+      });
+
+    }
 
   });
 
   const note = document.getElementById("dayNote").value;
+
+  console.log(tasks);
 
   await fetch('/submit', {
 
@@ -445,18 +460,17 @@ async function submitWork() {
 
       user: user.id,
 
-      tasks,
+      tasks: tasks,
 
-      note
+      note: note
 
     })
 
   });
 
-  alert("Work Submitted Successfully");
+  alert("Submitted Successfully");
 
 }
-
 loadTasks();
 
 </script>
