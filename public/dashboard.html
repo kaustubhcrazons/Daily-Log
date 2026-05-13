@@ -328,26 +328,35 @@ async function loadTasks(){
     return;
   }
 
-  tasks.forEach(task => {
+ tasks.forEach(task => {
 
   const div = document.createElement("div");
 
   div.className = "task-card";
 
+  div.style = `
+    background:white;
+    border-radius:18px;
+    padding:20px;
+    margin-bottom:18px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.05);
+  `;
+
   div.innerHTML = `
-  
+
     <div style="
       display:flex;
       justify-content:space-between;
       align-items:center;
-      margin-bottom:12px;
+      margin-bottom:15px;
     ">
 
       <div>
 
         <h3 style="
-          margin-bottom:6px;
           font-size:20px;
+          margin-bottom:6px;
+          color:#111827;
         ">
           ${task.task}
         </h3>
@@ -373,15 +382,28 @@ async function loadTasks(){
         type="number"
         placeholder="Hours"
         class="hrs"
+        style="
+          flex:1;
+          padding:12px;
+          border-radius:10px;
+          border:1px solid #dbe2ea;
+        "
       >
 
       <input
         type="number"
         placeholder="Minutes"
         class="mins"
+        style="
+          flex:1;
+          padding:12px;
+          border-radius:10px;
+          border:1px solid #dbe2ea;
+        "
       >
 
     </div>
+
   `;
 
   container.appendChild(div);
