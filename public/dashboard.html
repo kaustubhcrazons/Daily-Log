@@ -303,7 +303,7 @@
 
   <!-- ================= BUTTON ================= -->
 
-  <button onclick="submitTask()">
+  <button onclick="submitWork()">
     Submit Work
   </button>
 
@@ -352,12 +352,12 @@ async function loadTasks() {
 
     div.innerHTML = `
 
-      <h3 style="
-        font-size:20px;
-        margin-bottom:8px;
-      ">
-        ${task.task}
-      </h3>
+    <h3 class="task-name" style="
+  font-size:20px;
+  margin-bottom:8px;
+">
+  ${task.task}
+</h3>
 
       <p style="
         color:#64748b;
@@ -405,57 +405,56 @@ async function loadTasks() {
 
 }
 
+async function submitWork() {
 
-async function submitTask(){
+  const user = JSON.parse(localStorage.getItem("user"));
 
-  const rows = document.querySelectorAll(".task");
+  const cards = document.querySelectorAll(".task-card");
 
-  let tasks = [];
+  const tasks = [];
 
-  let totalMins = 0;
+  cards.forEach(card => {
 
-  rows.forEach(row => {
+    const task = card.querySelector(".task-name").innerText;
 
-    const task = row.querySelector("p").innerText;
+    const hrs = card.querySelector(".hrs").value || 0;
 
-    const hrs = parseInt(row.querySelector(".hrs").value) || 0;
+    const mins = card.querySelector(".mins").value || 0;
 
-    const mins = parseInt(row.querySelector(".mins").value) || 0;
+    tasks.push({
+      task,
+      hrs,
+      mins
+    });
 
-    totalMins += (hrs * 60) + mins;
-
-    if(hrs || mins){
-
-      tasks.push({
-        task,
-        hrs,
-        mins
-      });
-    }
   });
-
-  document.getElementById("totalHours").innerText =
-    (totalMins / 60).toFixed(1);
 
   const note = document.getElementById("dayNote").value;
 
-  await fetch('/submit',{
+  await fetch('/submit', {
 
-    method:'POST',
+    method: 'POST',
 
-    headers:{
-      'Content-Type':'application/json'
+    headers: {
+      'Content-Type': 'application/json'
     },
 
-    body:JSON.stringify({
-      action:"submit",
-      user:user.id,
+    body: JSON.stringify({
+
+      action: "submit",
+
+      user: user.id,
+
       tasks,
+
       note
+
     })
+
   });
 
-  alert("Work Submitted Successfully ✅");
+  alert("Work Submitted Successfully");
+
 }
 
 loadTasks();
