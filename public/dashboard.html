@@ -172,22 +172,28 @@
     }
 .dashboard-layout{
   display:grid;
-  grid-template-columns:2fr 320px;
+  grid-template-columns:1fr 300px;
+  gap:20px;
+  align-items:start;
   gap:24px;
   margin-top:25px;
   height:calc(100vh - 280px);
 }
-
 .tasks-section{
   background:white;
-  border-radius:24px;
-  padding:24px;
-  overflow:hidden;
-  display:flex;
-  flex-direction:column;
-  box-shadow:0 8px 30px rgba(0,0,0,0.05);
-}
+  border-radius:20px;
+  padding:20px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.05);
 
+}
+.task-card{
+  background:#f8fafc;
+  border:1px solid #e5e7eb;
+  border-radius:16px;
+  padding:16px;
+  margin:0;
+  box-shadow:none;
+}
 .section-header{
   display:flex;
   justify-content:space-between;
@@ -206,10 +212,9 @@
 
 .tasks-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:18px;
-  overflow-y:auto;
-  padding-right:5px;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  margin-top:15px;
 }
 
 .side-panel{
@@ -220,9 +225,9 @@
 
 .panel-card{
   background:white;
-  border-radius:24px;
-  padding:24px;
-  box-shadow:0 8px 30px rgba(0,0,0,0.05);
+  border-radius:20px;
+  padding:18px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.05);
 }
 
 .summary-item{
@@ -365,6 +370,17 @@
     flex-direction:column;
   }
 }
+@media(max-width:1200px){
+
+  .tasks-grid{
+    grid-template-columns:1fr;
+  }
+
+  .dashboard-layout{
+    grid-template-columns:1fr;
+  }
+
+}
   </style>
 </head>
 
@@ -419,28 +435,7 @@
     </div>
 
   </div>
-<div style="margin-bottom:20px;">
 
-  <label style="
-    display:block;
-    margin-bottom:8px;
-    font-weight:600;
-  ">
-    Work Date
-  </label>
-
-  <input
-    type="date"
-    id="workDate"
-    style="
-      padding:12px;
-      border-radius:12px;
-      border:1px solid #dbe2ea;
-      width:220px;
-    "
-  >
-
-</div>
 <div class="dashboard-layout">
 
   <!-- LEFT -->
