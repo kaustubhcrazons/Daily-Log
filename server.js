@@ -14,7 +14,7 @@ app.use(express.static('public'));
 const PORT = process.env.PORT || 3000;
 
 // 🔗 YOUR APPS SCRIPT URL
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbycQZHiDIesYL3OyhP659MirZshRyUxKOaEMERopqddag46WPHXzuPTBWaXbc4Qh534Sw/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxC_EmDmni-tu-NsyvInfE2b3u7qNwxYcSuezfI8115wwSaMSeODs58C3Ig4j-TEJ1Hug/exec";
 
 // ================= LOGIN =================
 const users = JSON.parse(fs.readFileSync('users.json'));
@@ -114,4 +114,29 @@ app.get('/', (req, res) => {
 // ================= START =================
 app.listen(PORT, () => {
   console.log("Server running on port", PORT);
+});
+// ================= PROFILE =================
+
+app.get('/profile/:user', async (req,res)=>{
+
+  try{
+
+    const user = req.params.user;
+
+    const response = await fetch(
+      `${SCRIPT_URL}?type=profile&user=${user}`
+    );
+
+    const data = await response.json();
+
+    res.json(data);
+
+  }catch(err){
+
+    res.status(500).json({
+      error:"Failed"
+    });
+
+  }
+
 });
