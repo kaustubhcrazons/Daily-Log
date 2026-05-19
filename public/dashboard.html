@@ -202,7 +202,23 @@ body{
   margin-bottom:16px;
   font-size:14px;
 }
+.status-working{
+  background:#dcfce7;
+  color:#166534;
+  padding:6px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:600;
+}
 
+.status-hold{
+  background:#fef3c7;
+  color:#92400e;
+  padding:6px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:600;
+}
 .task-inputs{
   display:flex;
   gap:10px;
@@ -496,35 +512,51 @@ async function loadTasks() {
 
     div.innerHTML = `
 
-      <div class="task-inner">
+<div class="task-inner">
 
-        <h3 class="task-name">
-          ${task.task}
-        </h3>
+  <div style="
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+  ">
 
-        <p class="task-info">
-          ${task.client} • ${task.project}
-        </p>
+    <h3 class="task-name">
+      ${task.task}
+    </h3>
 
-        <div class="task-inputs">
+    <span class="
+      ${task.status === 'On Hold'
+        ? 'status-hold'
+        : 'status-working'}
+    ">
+      ${task.status}
+    </span>
 
-          <input
-            type="number"
-            placeholder="Hours"
-            class="hrs"
-          >
+  </div>
 
-          <input
-            type="number"
-            placeholder="Minutes"
-            class="mins"
-          >
+  <p class="task-info">
+    ${task.client} • ${task.project}
+  </p>
 
-        </div>
+  <div class="task-inputs">
 
-      </div>
+    <input
+      type="number"
+      placeholder="Hours"
+      class="hrs"
+    >
 
-    `;
+    <input
+      type="number"
+      placeholder="Minutes"
+      class="mins"
+    >
+
+  </div>
+
+</div>
+`;
 
     container.appendChild(div);
 
@@ -605,4 +637,4 @@ loadTasks();
 
 </body>
 </html>
-```
+
