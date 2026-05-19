@@ -115,6 +115,7 @@
       font-size:22px;
     }
 
+
     /* ================= TASK ================= */
 
     .task{
@@ -343,7 +344,28 @@
     </div>
 
   </div>
+<div style="margin-bottom:20px;">
 
+  <label style="
+    display:block;
+    margin-bottom:8px;
+    font-weight:600;
+  ">
+    Work Date
+  </label>
+
+  <input
+    type="date"
+    id="workDate"
+    style="
+      padding:12px;
+      border-radius:12px;
+      border:1px solid #dbe2ea;
+      width:220px;
+    "
+  >
+
+</div>
   <!-- ================= TASKS ================= -->
 
 <div class="card">
@@ -530,7 +552,8 @@ async function submitWork() {
 
       tasks: tasks,
 
-      note: note
+      note: note,
+workDate: workDate
 
     })
 
@@ -540,6 +563,8 @@ async function submitWork() {
 
 }
 loadTasks();
+document.getElementById("workDate").value =
+  new Date().toISOString().split("T")[0];
 
 </script>
 

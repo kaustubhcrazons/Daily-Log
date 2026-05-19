@@ -14,7 +14,7 @@ app.use(express.static('public'));
 const PORT = process.env.PORT || 3000;
 
 // 🔗 YOUR APPS SCRIPT URL
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyTfBLtJwQsKkYAczOwrOA9w3-PVs2MacqRNCBV2MVwWtMNg-xHyQm1v6YT_XByV_SR4Q/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwT6uOcWV52_DFLr3fTp11IQBggeuUWEATEVx4qJMTBfURQlrAD3HCXfEKe456zAFHu/exec";
 
 // ================= LOGIN =================
 const users = JSON.parse(fs.readFileSync('users.json'));
