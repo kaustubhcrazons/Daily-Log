@@ -98,12 +98,6 @@
       margin-bottom:10px;
     }
 
-    .role{
-      color:#64748b;
-      font-size:17px;
-      margin-bottom:14px;
-    }
-
     .badge{
       display:inline-block;
       padding:8px 16px;
@@ -112,6 +106,7 @@
       border-radius:999px;
       font-size:13px;
       font-weight:600;
+      margin-top:10px;
     }
 
     .edit-btn{
@@ -190,6 +185,7 @@
       display:flex;
       flex-wrap:wrap;
       gap:12px;
+      margin-bottom:18px;
     }
 
     .skill{
@@ -253,6 +249,28 @@
       border-radius:999px;
     }
 
+    #designation{
+      border:none;
+      background:transparent;
+      font-size:18px;
+      color:#64748b;
+      outline:none;
+      width:320px;
+      margin-bottom:8px;
+    }
+
+    #skillsInput{
+      width:100%;
+      margin-top:15px;
+      height:90px;
+      border:1px solid #dbe3f0;
+      border-radius:16px;
+      padding:14px;
+      resize:none;
+      outline:none;
+      font-family:Inter;
+    }
+
     @media(max-width:900px){
 
       .grid{
@@ -296,6 +314,7 @@
 
   </style>
 </head>
+
 <body>
 
 <div class="profile-card">
@@ -309,19 +328,23 @@
       <div class="profile-left">
 
         <div class="avatar">
+
           <img
             id="profileImg"
             src="https://ui-avatars.com/api/?name=Kunal&background=4f46e5&color=fff&size=256"
           >
+
         </div>
 
         <div>
 
           <h1 id="empName">Kunal</h1>
 
-          <div class="role" id="designation">
-            UI/UX Designer
-          </div>
+          <input
+            type="text"
+            id="designation"
+            value="UI/UX Designer"
+          >
 
           <div class="badge">
             Active Employee
@@ -331,47 +354,49 @@
 
       </div>
 
-      <button class="edit-btn">
-        Edit Profile
+      <button onclick="saveProfile()" class="edit-btn">
+        Save Profile
       </button>
 
     </div>
+
+    <!-- ================= STATS ================= -->
 
     <div class="stats">
 
       <div class="stat-card">
         <p>Total Hours This Month</p>
-        <h2 id="totalHours">124</h2>
+        <h2 id="totalHours">0</h2>
       </div>
 
       <div class="stat-card">
         <p>Completed Tasks</p>
-        <h2 id="completedTasks">36</h2>
+        <h2 id="completedTasks">0</h2>
       </div>
 
       <div class="stat-card">
         <p>Active Projects</p>
-        <h2 id="activeProjects">5</h2>
+        <h2 id="activeProjects">0</h2>
       </div>
 
     </div>
 
+    <!-- ================= GRID ================= -->
+
     <div class="grid">
+
+      <!-- ================= SKILLS ================= -->
 
       <div class="section">
 
         <h3>Skills</h3>
 
-        <div class="skills">
+        <div class="skills" id="skillsContainer"></div>
 
-          <div class="skill">UI Design</div>
-          <div class="skill">Figma</div>
-          <div class="skill">Wireframing</div>
-          <div class="skill">Graphic Design</div>
-          <div class="skill">Brand Identity</div>
-          <div class="skill">Prototyping</div>
-
-        </div>
+        <textarea
+          id="skillsInput"
+          placeholder="Add skills separated by commas"
+        ></textarea>
 
         <div class="progress-box">
 
@@ -388,45 +413,11 @@
 
       </div>
 
-      <div class="section">
+      <!-- ================= ACTIVITY ================= -->
+
+      <div class="section" id="activitySection">
 
         <h3>Recent Activity</h3>
-
-        <div class="activity">
-
-          <div class="activity-title">
-            Worked 3 hrs on Trident Website UI
-          </div>
-
-          <div class="activity-time">
-            Today • 3:45 PM
-          </div>
-
-        </div>
-
-        <div class="activity">
-
-          <div class="activity-title">
-            Completed Confetti homepage edits
-          </div>
-
-          <div class="activity-time">
-            Yesterday • 6:10 PM
-          </div>
-
-        </div>
-
-        <div class="activity">
-
-          <div class="activity-title">
-            Submitted daily report
-          </div>
-
-          <div class="activity-time">
-            Yesterday • 8:20 PM
-          </div>
-
-        </div>
 
       </div>
 
@@ -438,39 +429,43 @@
 
 <script>
 
-
-
 const user = JSON.parse(localStorage.getItem("user"));
 
 async function loadProfile(){
 
-  const res = await fetch(
+  // ================= PROFILE =================
+
+  const profileRes = await fetch(
     `/profile/${user.id}`
   );
 
-  const data = await res.json();
+  const profile = await profileRes.json();
 
   // NAME
   document.getElementById("empName").innerText =
-    data.name || user.id;
+    profile.name || user.id;
 
   // DESIGNATION
-  document.getElementById("designation").innerText =
-    data.designation || "Employee";
+  document.getElementById("designation").value =
+    profile.designation || "";
 
   // AVATAR
   document.getElementById("profileImg").src =
-    `https://ui-avatars.com/api/?name=${data.name}&background=4f46e5&color=fff`;
+    `https://ui-avatars.com/api/?name=${profile.name || user.id}&background=4f46e5&color=fff`;
 
-  // SKILLS
+  // ================= SKILLS =================
+
   const skillsContainer =
-    document.querySelector(".skills");
+    document.getElementById("skillsContainer");
 
   skillsContainer.innerHTML = "";
 
-  if(data.skills){
+  document.getElementById("skillsInput").value =
+    profile.skills || "";
 
-    const skills = data.skills.split(",");
+  if(profile.skills){
+
+    const skills = profile.skills.split(",");
 
     skills.forEach(skill => {
 
@@ -484,12 +479,119 @@ async function loadProfile(){
 
   }
 
+  // ================= STATS =================
+
+  const statsRes = await fetch(
+    `/profile-stats/${user.id}`
+  );
+
+  const stats = await statsRes.json();
+
+  document.getElementById("totalHours").innerText =
+    stats.totalHours || 0;
+
+  document.getElementById("completedTasks").innerText =
+    stats.completedTasks || 0;
+
+  document.getElementById("activeProjects").innerText =
+    stats.activeProjects || 0;
+
+  // ================= ACTIVITIES =================
+
+  const activityRes = await fetch(
+    `/recent-activities/${user.id}`
+  );
+
+  const activities = await activityRes.json();
+
+  const activitySection =
+    document.getElementById("activitySection");
+
+  let html = `
+    <h3>Recent Activity</h3>
+  `;
+
+  if(activities.length === 0){
+
+    html += `
+      <p>No recent activity</p>
+    `;
+  }
+
+  activities.forEach(a => {
+
+    html += `
+
+      <div class="activity">
+
+        <div class="activity-title">
+          ${a.title}
+        </div>
+
+        <div class="activity-time">
+          ${a.time}
+        </div>
+
+      </div>
+
+    `;
+  });
+
+  activitySection.innerHTML = html;
+
+}
+
+// ================= SAVE PROFILE =================
+
+async function saveProfile(){
+
+  const designation =
+    document.getElementById("designation").value;
+
+  const skills =
+    document.getElementById("skillsInput").value;
+
+  const res = await fetch('/submit', {
+
+    method:'POST',
+
+    headers:{
+      'Content-Type':'application/json'
+    },
+
+    body:JSON.stringify({
+
+      action:'updateProfile',
+
+      user:user.id,
+
+      designation,
+
+      skills
+
+    })
+
+  });
+
+  const data = await res.json();
+
+  if(data.success){
+
+    alert("Profile Updated Successfully");
+
+    loadProfile();
+
+  }else{
+
+    alert("Update Failed");
+
+  }
+
 }
 
 loadProfile();
 
 </script>
-
 
 </body>
 </html>
