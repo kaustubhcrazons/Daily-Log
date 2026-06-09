@@ -14,21 +14,61 @@ app.use(express.static('public'));
 const PORT = process.env.PORT || 3000;
 
 // 🔗 YOUR APPS SCRIPT URL
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzauipCM2ndsA_-Tsi2kzFQau8xw0-Q4Y4SJv8Ykzzn6i0bgzx1Lvx5TUZTYA93ie91pw/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwuLxePfuG8MsJJPhpjQRx99GE9vGylcavcYzK4oj8l-Mow8uJd2qSoiIpvl-7RtzoEhA/exec";
 
 // ================= LOGIN =================
 const users = JSON.parse(fs.readFileSync('users.json'));
 
-app.post('/login', (req, res) => {
-  const { id, password } = req.body;
+app.post('/login', async (req, res) => {
 
-  const user = users.find(u => u.id === id && u.password === password);
+  try {
 
-  if (user) {
-    res.json({ success: true, user });
-  } else {
-    res.json({ success: false });
+    const { id, password } = req.body;
+
+    const response = await fetch(
+      `${SCRIPT_URL}?type=employees`
+    );
+
+    const employees = await response.json();
+
+    const user = employees.find(
+
+      emp =>
+        emp.username.toLowerCase() ===
+        id.toLowerCase() &&
+
+        emp.password.toString() ===
+        password.toString()
+
+    );
+
+    if (user) {
+
+      res.json({
+        success: true,
+        user: {
+          id: user.username
+        }
+      });
+
+    } else {
+
+      res.json({
+        success: false
+      });
+
+    }
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      success: false
+    });
+
   }
+
 });
 
 // ================= GET ASSIGNED TASKS =================
