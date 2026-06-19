@@ -14,7 +14,7 @@ app.use(express.static('public'));
 const PORT = process.env.PORT || 3000;
 
 // 🔗 YOUR APPS SCRIPT URL
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwIXNaYK-mlSiftc-KNLVTjZuWgnFJjOyX9GmF3JlE_sCvYuvm9omMNRA-BCQ5cJviASA/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx5uexnon5Kgonn_9M4hk9t_Pv_Ls9rLywjZXhmAkrdFZ1r2gsF-RbhKys54qXvx3_5Pg/exec";
 
 // ================= LOGIN =================
 const users = JSON.parse(fs.readFileSync('users.json'));
@@ -175,6 +175,31 @@ app.get('/profile/:user', async (req,res)=>{
 
     res.status(500).json({
       error:"Failed"
+    });
+
+  }
+
+});
+app.get('/history/:user', async (req,res)=>{
+
+  try{
+
+    const response = await fetch(
+      `${SCRIPT_URL}?type=taskHistory&user=${req.params.user}`
+    );
+
+    const text = await response.text();
+
+    console.log("APPS SCRIPT RESPONSE:");
+    console.log(text);
+
+    res.send(text);
+
+  }catch(err){
+
+    res.status(500).json({
+      error: err.message,
+      stack: err.stack
     });
 
   }
