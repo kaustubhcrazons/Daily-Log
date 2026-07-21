@@ -77,13 +77,13 @@
     }
 
     .avatar{
-      width:140px;
-      height:140px;
+      width:160px;
+      height:160px;
       border-radius:50%;
-      border:6px solid white;
+      border:8px solid white;
       overflow:hidden;
       background:white;
-      box-shadow:0 10px 30px rgba(0,0,0,0.1);
+      box-shadow:0 12px 35px rgba(0,0,0,0.12);
     }
 
     .avatar img{
@@ -91,6 +91,17 @@
       height:100%;
       object-fit:cover;
     }
+    .joining-date{
+    margin-top:12px;
+    font-size:16px;
+    color:#64748b;
+    font-weight:500;
+}
+
+.joining-date span{
+    color:#111827;
+    font-weight:600;
+}
 
     .top h1{
       font-size:42px;
@@ -164,9 +175,10 @@
 
     .grid{
       display:grid;
-      grid-template-columns:1fr 1fr;
+      grid-template-columns:repeat(2,1fr);
       gap:25px;
       margin-top:35px;
+      align-items:stretch;
     }
 
     .section{
@@ -174,6 +186,7 @@
       border-radius:24px;
       padding:26px;
       border:1px solid #e5e7eb;
+       min-height:280px;
     }
 
     .section h3{
@@ -309,7 +322,10 @@
       .stats{
         grid-template-columns:1fr;
       }
-
+ 
+      .grid{
+        grid-template-columns:1fr;
+      }
     }
 
   </style>
@@ -345,6 +361,12 @@
             id="designation"
             value="UI/UX Designer"
           >
+           <p class="joining-date">
+        Joined :
+        <span id="joiningDate">
+            15 Dec 2025
+        </span>
+    </p>
 
           <div class="badge">
             Active Employee
@@ -379,6 +401,11 @@
         <h2 id="activeProjects">0</h2>
       </div>
 
+      <div class="stat-card">
+        <p>Pending Tasks</p>
+        <h2 id="pendingTasks">0</h2>
+      </div>
+
     </div>
 
     <!-- ================= GRID ================= -->
@@ -409,23 +436,41 @@
             <div class="progress-fill"></div>
           </div>
 
-        </div>
+     </div>
+        
+     </div>
 
+      <!-- ================= CURRENT PROJECTS ================= -->
+        
+     <div class="section">
+
+        <h3>Current Projects</h3>
+
+        <div class="projects-container" id="projectsContainer"></div>
+      
       </div>
-
+     
       <!-- ================= ACTIVITY ================= -->
 
       <div class="section" id="activitySection">
 
         <h3>Recent Activity</h3>
 
+        <div id="activityContainer"></div>
+
       </div>
+
+      <!-- ================= LEAVE BALANCE ================= -->
+     
+      <div class="section">
+        
+      <h3>Leave Balance</h3>
+
+        <div id="leaveContainer"></div>
 
     </div>
 
-  </div>
-
-</div>
+    </div>
 
 <script>
 
