@@ -1,284 +1,208 @@
-const express = require("express");
-const bodyParser = require("body-parser");
+const express = require('express');
 
+const bodyParser = require('body-parser');
+
+const fs = require('fs');
+// ✅ FIX: fetch for all environments (Render safe)
+
+const fetch = (...args) =>
+
+  import('node-fetch').then(({ default: fetch }) => fetch(...args));
 const app = express();
 
 app.use(bodyParser.json());
-app.use(express.static("public"));
 
+app.use(express.static('public'));
 const PORT = process.env.PORT || 3000;
 
-// Google Apps Script Web App URL
-const SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbzRDxJ5hVkxQ_GEah1K3FzRvjFNg0KVIgAsvTYmPBTouNYemwZ6ZqzfTT4j05QEY59SQg/exec";
+// 🔗 YOUR APPS SCRIPT URL
 
-// ======================================================
-// FETCH
-// ======================================================
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxNSkZA-ZFT-obxcezIDAw-FEnbZivT7kZMklR-Q5qSSP472o1bUKpl_Efocy7qXJthDw/exec";
+// ================= LOGIN =================
 
-const fetch = (...args) =>
-  import("node-fetch").then(({ default: fetch }) => fetch(...args));
-
-
-// ======================================================
-// LOGIN
-// ======================================================
-
-app.post("/login", async (req, res) => {
+const users = JSON.parse(fs.readFileSync('users.json'));
+app.post('/login', async (req, res) => {
   try {
     const { id, password } = req.body;
-
-    if (!id || !password) {
-      return res.json({
-        success: false,
-        message: "Employee ID and password are required"
-      });
-    }
-
     const response = await fetch(
+
       ${SCRIPT_URL}?type=employees
+
     );
+    const employees = await response.json();
+    const user = employees.find(
+      emp =>
 
-    const text = await response.text();
+        emp.username.toLowerCase() ===
 
-    console.log("EMPLOYEES RESPONSE:");
-    console.log(text);
+        id.toLowerCase() &&
+        emp.password.toString() ===
 
-    let employees;
+        password.toString()
+    );
+    if (user) {
+      res.json({
 
-    try {
-      employees = JSON.parse(text);
-    } catch (parseError) {
-      console.error("EMPLOYEES JSON ERROR:", parseError);
+        success: true,
 
-      return res.status(500).json({
-        success: false,
-        message: "Invalid response from Google Apps Script"
+        user: {
+
+          id: user.username
+
+        }
+
+      });
+    } else {
+      res.json({
+
+        success: false
+
       });
     }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
 
-    const loginId = String(id).trim().toLowerCase();
-    const loginPassword = String(password).trim();
+      success: false
 
-    const user = employees.find((emp) => {
-      const username = String(emp.username || "")
-        .trim()
-        .toLowerCase();
-
-      const empPassword = String(emp.password || "").trim();
-
-      return (
-        username === loginId &&
-        empPassword === loginPassword
-      );
-    });
-
-    if (!user) {
-      console.log("LOGIN FAILED:", id);
-
-      return res.json({
-        success: false,
-        message: "Invalid Employee ID or Password"
-      });
-    }
-
-    console.log("LOGIN SUCCESS:", user.username);
-
-    return res.json({
-      success: true,
-      user: {
-        id: user.username,
-        designation: user.designation || ""
-      }
-    });
-
-  } catch (error) {
-    console.error("LOGIN ERROR:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Login server error"
     });
   }
 });
+// ================= GET ASSIGNED TASKS =================
 
-
-// ======================================================
-// GET ASSIGNED TASKS
-// ======================================================
-
-app.get("/tasks/:name", async (req, res) => {
+app.get('/tasks/:name', async (req, res) => {
   try {
     const user = req.params.name;
+    const response = await fetch(
 
-    const url =
-      ${SCRIPT_URL}?type=tasks&user=${encodeURIComponent(user)};
+      ${SCRIPT_URL}?type=tasks&user=${user}
 
-    console.log("TASK CALL:", url);
-
-    const response = await fetch(url);
-
+    );
     const text = await response.text();
-
     console.log("TASK RAW:", text);
-
     const data = JSON.parse(text);
-
     res.json(data);
-
-  } catch (error) {
-    console.error("TASK ERROR:", error);
-
+  } catch (err) {
+    console.error("TASK ERROR:", err);
     res.status(500).json({
-      error: "Failed to load tasks"
+
+      error: err.message
+
     });
+
   }
+
 });
+// ================= SUBMIT / ASSIGN / REMOVE =================
 
+app.post('/submit', async (req, res) => {
 
-// ======================================================
-// SUBMIT / ASSIGN / REMOVE
-// ======================================================
-
-app.post("/submit", async (req, res) => {
   try {
+
     const response = await fetch(SCRIPT_URL, {
+
       method: "POST",
+
       headers: {
+
         "Content-Type": "application/json"
+
       },
+
       body: JSON.stringify(req.body)
-    });
 
+    });
     const text = await response.text();
-
     console.log("SUBMIT RAW:", text);
+    res.json({ success: true });
+  } catch (err) {
 
-    res.json({
-      success: true
-    });
+    console.error("SUBMIT ERROR:", err);
 
-  } catch (error) {
-    console.error("SUBMIT ERROR:", error);
+    res.status(500).json({ error: "Failed" });
 
-    res.status(500).json({
-      success: false,
-      error: "Failed"
-    });
   }
+
 });
+// ================= TASK SUMMARY =================
 
+app.get('/task-summary/:user', async (req, res) => {
 
-// ======================================================
-// TASK SUMMARY
-// ======================================================
-
-app.get("/task-summary/:user", async (req, res) => {
   try {
-    const user = req.params.user;
 
-    const url =
-      ${SCRIPT_URL}?type=taskSummary&user=${encodeURIComponent(user)};
+    const user = req.params.user;
+    const url = ${SCRIPT_URL}?type=taskSummary&user=${user};
 
     console.log("SUMMARY CALL:", url);
-
     const response = await fetch(url);
 
     const text = await response.text();
-
     console.log("SUMMARY RAW:", text);
-
     const data = JSON.parse(text);
-
     res.json(data);
+  } catch (err) {
 
-  } catch (error) {
-    console.error("SUMMARY ERROR:", error);
+    console.error("SUMMARY ERROR:", err);
 
-    res.status(500).json({
-      error: "Failed"
-    });
+    res.status(500).json({ error: "Failed" });
+
   }
+
 });
+// ================= HOME =================
 
+app.get('/', (req, res) => {
 
-// ======================================================
-// PROFILE
-// ======================================================
+  res.sendFile(__dirname + '/public/login.html');
 
-app.get("/profile/:user", async (req, res) => {
-  try {
-    const user = req.params.user;
-
-    const url =
-      ${SCRIPT_URL}?type=profile&user=${encodeURIComponent(user)};
-
-    console.log("PROFILE CALL:", url);
-
-    const response = await fetch(url);
-
-    const text = await response.text();
-
-    console.log("PROFILE RAW:", text);
-
-    const data = JSON.parse(text);
-
-    res.json(data);
-
-  } catch (error) {
-    console.error("PROFILE ERROR:", error);
-
-    res.status(500).json({
-      error: "Failed"
-    });
-  }
 });
-
-
-// ======================================================
-// HISTORY
-// ======================================================
-
-app.get("/history/:user", async (req, res) => {
-  try {
-    const user = req.params.user;
-
-    const url =
-      ${SCRIPT_URL}?type=taskHistory&user=${encodeURIComponent(user)};
-
-    console.log("HISTORY CALL:", url);
-
-    const response = await fetch(url);
-
-    const text = await response.text();
-
-    console.log("HISTORY RAW:", text);
-
-    res.send(text);
-
-  } catch (error) {
-    console.error("HISTORY ERROR:", error);
-
-    res.status(500).json({
-      error: error.message
-    });
-  }
-});
-
-
-// ======================================================
-// HOME
-// ======================================================
-
-app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/public/login.html");
-});
-
-
-// ======================================================
-// START SERVER
-// ======================================================
+// ================= START =================
 
 app.listen(PORT, () => {
-  console.log(Server running on port ${PORT});
+
+  console.log("Server running on port", PORT);
+
+});
+
+// ================= PROFILE =================
+app.get('/profile/:user', async (req,res)=>{
+  try{
+    const user = req.params.user;
+    const response = await fetch(
+
+      ${SCRIPT_URL}?type=profile&user=${user}
+
+    );
+    const data = await response.json();
+    res.json(data);
+  }catch(err){
+    res.status(500).json({
+
+      error:"Failed"
+
+    });
+  }
+});
+
+app.get('/history/:user', async (req,res)=>{
+  try{
+    const response = await fetch(
+
+      ${SCRIPT_URL}?type=taskHistory&user=${req.params.user}
+
+    );
+    const text = await response.text();
+    console.log("APPS SCRIPT RESPONSE:");
+
+    console.log(text);
+    res.send(text);
+  }catch(err){
+    res.status(500).json({
+
+      error: err.message,
+
+      stack: err.stack
+
+    });
+  }
 });
