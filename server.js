@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3000;
 
 // Google Apps Script Web App URL
 const SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbw1B1qSBKI2KcJtYIakcAOml4ahucgJyG0YJKq19T8__UEzuehu0g8yD_QMvxM7wK_uvw/exec";
+  "https://script.google.com/macros/s/AKfycbzRDxJ5hVkxQ_GEah1K3FzRvjFNg0KVIgAsvTYmPBTouNYemwZ6ZqzfTT4j05QEY59SQg/exec";
 
 // ======================================================
 // FETCH
