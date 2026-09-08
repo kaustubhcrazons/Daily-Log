@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- =====================================================
-       PROFESSIONAL CORPORATE FONTS
+       PROFESSIONAL OFFICE FONTS
   ====================================================== -->
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,7 +18,6 @@
     rel="stylesheet"
   >
 
-
   <style>
 
     /* =====================================================
@@ -27,37 +26,35 @@
 
     :root{
 
-      /* Backgrounds */
-
       --page:#F5F5F3;
+
       --white:#FFFFFF;
+
       --surface:#FAFAF9;
 
-      /* Text */
-
       --heading:#252525;
+
       --text:#303030;
+
       --secondary:#5F6368;
+
       --muted:#85898D;
 
-      /* Borders */
-
       --border:#DDDFE2;
+
       --border-dark:#C9CCCF;
 
-      /* Accent */
-
       --accent:#2F6B4F;
+
       --accent-dark:#285B43;
+
       --accent-soft:#EDF4EF;
+
       --accent-border:#D3E2D8;
 
-      /* Table */
-
       --table-head:#303030;
-      --table-total:#F0F0ED;
 
-      /* Shadows */
+      --table-total:#F0F0ED;
 
       --shadow-sm:
         0 1px 3px rgba(0,0,0,.04);
@@ -120,7 +117,7 @@
 
 
     /* =====================================================
-       MAIN CONTAINER
+       MAIN
     ===================================================== */
 
     .main{
@@ -456,7 +453,7 @@
 
 
     /* =====================================================
-       PROJECT SECTION
+       PROJECTS
     ===================================================== */
 
     .projects-section{
@@ -480,7 +477,7 @@
     .projects-table th,
     .projects-table td{
 
-      height:42px;
+      height:54px;
 
       padding:6px 14px;
 
@@ -610,7 +607,7 @@
 
 
     /* =====================================================
-       HOURS INPUT
+       SCROLLING TIME PICKER
     ===================================================== */
 
     .hours-cell{
@@ -624,7 +621,7 @@
 
       width:100%;
 
-      height:32px;
+      height:50px;
 
       display:flex;
 
@@ -632,17 +629,23 @@
 
       justify-content:center;
 
+      gap:2px;
+
       background:#F7F7F6;
 
       border:1px solid var(--border);
 
-      border-radius:5px;
+      border-radius:6px;
+
+      overflow:hidden;
 
       transition:
 
         border-color .18s ease,
 
-        background .18s ease;
+        background .18s ease,
+
+        box-shadow .18s ease;
 
     }
 
@@ -660,61 +663,190 @@
     }
 
 
+    /* =====================================================
+       INDIVIDUAL NUMBER WHEEL
+    ===================================================== */
+
+    .time-wheel{
+
+      position:relative;
+
+      width:48px;
+
+      height:50px;
+
+      overflow-y:auto;
+
+      overflow-x:hidden;
+
+      scroll-snap-type:y mandatory;
+
+      scrollbar-width:none;
+
+      -ms-overflow-style:none;
+
+      overscroll-behavior:contain;
+
+      touch-action:pan-y;
+
+      cursor:ns-resize;
+
+    }
+
+
+    .time-wheel::-webkit-scrollbar{
+
+      display:none;
+
+    }
+
+
+    /* =====================================================
+       WHEEL NUMBERS
+    ===================================================== */
+
+    .time-wheel-item{
+
+      width:100%;
+
+      height:50px;
+
+      display:flex;
+
+      align-items:center;
+
+      justify-content:center;
+
+      scroll-snap-align:center;
+
+      font-family:'Inter',sans-serif;
+
+      font-size:13px;
+
+      font-weight:500;
+
+      color:#A0A3A6;
+
+      user-select:none;
+
+      cursor:pointer;
+
+      transition:
+
+        color .12s ease,
+
+        font-size .12s ease,
+
+        font-weight .12s ease;
+
+    }
+
+
+    /* Selected number */
+
+    .time-wheel-item.selected{
+
+      color:#252525;
+
+      font-size:15px;
+
+      font-weight:700;
+
+    }
+
+
+    /* Spacer */
+
+    .time-wheel-item.spacer{
+
+      pointer-events:none;
+
+      visibility:hidden;
+
+    }
+
+
+    /* =====================================================
+       CENTER INDICATOR
+    ===================================================== */
+
+    .time-wheel::before{
+
+      content:"";
+
+      position:absolute;
+
+      left:3px;
+
+      right:3px;
+
+      top:50%;
+
+      height:34px;
+
+      transform:translateY(-50%);
+
+      border-top:1px solid #D5D7D5;
+
+      border-bottom:1px solid #D5D7D5;
+
+      pointer-events:none;
+
+      z-index:3;
+
+      border-radius:3px;
+
+    }
+
+
+    /* =====================================================
+       COLON
+    ===================================================== */
+
+    .time-colon{
+
+      width:12px;
+
+      height:50px;
+
+      display:flex;
+
+      align-items:center;
+
+      justify-content:center;
+
+      color:#707579;
+
+      font-size:14px;
+
+      font-weight:700;
+
+      z-index:4;
+
+    }
+
+
+    /* =====================================================
+       HIDDEN ORIGINAL INPUTS
+       These remain because submitWork()
+       reads .hrs and .mins.
+    ===================================================== */
+
     .time-input input{
 
-      width:29px;
+      position:absolute;
 
-      height:26px;
+      width:1px;
+
+      height:1px;
 
       padding:0;
 
       border:0;
 
-      outline:none;
+      opacity:0;
 
-      background:transparent;
-
-      color:var(--text);
-
-      font-size:13px;
-
-      font-weight:600;
-
-      text-align:center;
-
-      -moz-appearance:textfield;
-
-    }
-
-
-    .time-input input::-webkit-outer-spin-button,
-    .time-input input::-webkit-inner-spin-button{
-
-      -webkit-appearance:none;
-
-      margin:0;
-
-    }
-
-
-    .time-input input::placeholder{
-
-      color:#A5A8AA;
-
-      opacity:1;
-
-    }
-
-
-    .time-colon{
-
-      margin:0 1px;
-
-      color:#777C80;
-
-      font-size:13px;
-
-      font-weight:600;
+      pointer-events:none;
 
     }
 
@@ -1022,6 +1154,13 @@
 
       }
 
+
+      .time-wheel{
+
+        width:44px;
+
+      }
+
     }
 
 
@@ -1070,7 +1209,7 @@
       .projects-table th:first-child,
       .projects-table td:first-child{
 
-        width:60%;
+        width:58%;
 
       }
 
@@ -1078,16 +1217,44 @@
       .projects-table th:last-child,
       .projects-table td:last-child{
 
-        width:40%;
+        width:42%;
 
       }
 
 
-      .time-input input{
+      .time-input{
 
-        width:26px;
+        height:48px;
 
-        font-size:12px;
+      }
+
+
+      .time-wheel{
+
+        width:40px;
+
+        height:48px;
+
+      }
+
+
+      .time-wheel-item{
+
+        height:48px;
+
+      }
+
+
+      .time-wheel::before{
+
+        height:32px;
+
+      }
+
+
+      .time-colon{
+
+        height:48px;
 
       }
 
@@ -1114,11 +1281,26 @@
        ACCESSIBILITY
     ===================================================== */
 
+    .time-wheel:focus{
+
+      outline:none;
+
+    }
+
+
+    .time-wheel:focus-visible{
+
+      box-shadow:
+        inset 0 0 0 2px rgba(47,107,79,.25);
+
+      border-radius:4px;
+
+    }
+
+
     @media(prefers-reduced-motion:reduce){
 
-      *,
-      *::before,
-      *::after{
+      *{
 
         transition:none !important;
 
@@ -1277,6 +1459,7 @@
               Total
             </td>
 
+
             <td
               class="total-time"
               id="totalDisplay"
@@ -1291,7 +1474,7 @@
       </table>
 
 
-      <!-- Existing logic -->
+      <!-- Existing dashboard logic -->
 
       <span
         id="taskCount"
@@ -1362,21 +1545,21 @@
 
 
   <!-- =====================================================
-       JAVASCRIPT — ORIGINAL WORKFLOW
+       JAVASCRIPT
   ===================================================== -->
 
   <script>
 
+
+    /* =====================================================
+       USER
+    ===================================================== */
 
     const user =
       JSON.parse(
         localStorage.getItem("user")
       );
 
-
-    /* =====================================================
-       USER
-    ===================================================== */
 
     if(user){
 
@@ -1508,6 +1691,48 @@
 
 
     /* =====================================================
+       UPDATE TOTAL
+    ===================================================== */
+
+    function updateTotalFromInputs(){
+
+      let totalMinutes = 0;
+
+
+      document
+        .querySelectorAll(".task-card")
+        .forEach(card => {
+
+          const hrs =
+            Number(
+              card.querySelector(
+                ".hrs"
+              )?.value || 0
+            );
+
+
+          const mins =
+            Number(
+              card.querySelector(
+                ".mins"
+              )?.value || 0
+            );
+
+
+          totalMinutes +=
+            (hrs * 60) + mins;
+
+        });
+
+
+      updateTotalDisplay(
+        totalMinutes
+      );
+
+    }
+
+
+    /* =====================================================
        LOAD TASKS
     ===================================================== */
 
@@ -1626,30 +1851,114 @@
 
             <div class="time-input">
 
-              <input
-                type="number"
-                min="0"
-                max="99"
-                inputmode="numeric"
-                placeholder="00"
-                class="hrs"
-                aria-label="Hours"
+
+              <!-- =========================================
+                   HOURS WHEEL
+                   01 - 12
+              ========================================== -->
+
+              <div
+                class="time-wheel hours-wheel"
+                data-type="hours"
+                tabindex="0"
+                aria-label="Select hours"
               >
 
+                <div
+                  class="time-wheel-item spacer"
+                ></div>
+
+
+                ${Array.from(
+                  {length:12},
+                  (_,i)=>`
+
+                    <div
+                      class="time-wheel-item"
+                      data-value="${i + 1}"
+                    >
+                      ${String(i + 1).padStart(2,"0")}
+                    </div>
+
+                  `
+                ).join("")}
+
+
+                <div
+                  class="time-wheel-item spacer"
+                ></div>
+
+              </div>
+
+
+              <!-- COLON -->
 
               <span class="time-colon">
                 :
               </span>
 
 
+              <!-- =========================================
+                   MINUTES WHEEL
+                   01 - 60
+              ========================================== -->
+
+              <div
+                class="time-wheel minutes-wheel"
+                data-type="minutes"
+                tabindex="0"
+                aria-label="Select minutes"
+              >
+
+                <div
+                  class="time-wheel-item spacer"
+                ></div>
+
+
+                ${Array.from(
+                  {length:60},
+                  (_,i)=>`
+
+                    <div
+                      class="time-wheel-item"
+                      data-value="${i + 1}"
+                    >
+                      ${String(i + 1).padStart(2,"0")}
+                    </div>
+
+                  `
+                ).join("")}
+
+
+                <div
+                  class="time-wheel-item spacer"
+                ></div>
+
+              </div>
+
+
+              <!-- =========================================
+                   ORIGINAL INPUTS
+                   Kept for existing submitWork()
+              ========================================== -->
+
               <input
                 type="number"
                 min="0"
-                max="59"
-                inputmode="numeric"
-                placeholder="00"
+                max="12"
+                class="hrs"
+                aria-hidden="true"
+                tabindex="-1"
+              >
+
+
+              <input
+                type="number"
+                min="0"
+                max="60"
                 class="mins"
-                aria-label="Minutes"
+                aria-hidden="true"
+                tabindex="-1"
               >
 
             </div>
@@ -1664,6 +1973,527 @@
         );
 
       });
+
+
+      /* Initialize wheels */
+
+      setupTimeWheels();
+
+    }
+
+
+    /* =====================================================
+       TIME WHEEL SYSTEM
+    ===================================================== */
+
+    function setupTimeWheels(){
+
+      document
+        .querySelectorAll(
+          ".time-input"
+        )
+        .forEach(container => {
+
+
+          const hoursWheel =
+            container.querySelector(
+              ".hours-wheel"
+            );
+
+
+          const minutesWheel =
+            container.querySelector(
+              ".minutes-wheel"
+            );
+
+
+          const hrsInput =
+            container.querySelector(
+              ".hrs"
+            );
+
+
+          const minsInput =
+            container.querySelector(
+              ".mins"
+            );
+
+
+          /* =============================================
+             FIND CLOSEST NUMBER
+          ============================================= */
+
+          function getClosestItem(wheel){
+
+            const items =
+              [
+                ...wheel.querySelectorAll(
+                  ".time-wheel-item[data-value]"
+                )
+              ];
+
+
+            if(!items.length){
+
+              return null;
+
+            }
+
+
+            const center =
+              wheel.scrollTop +
+              wheel.clientHeight / 2;
+
+
+            let closest = null;
+
+            let smallestDistance =
+              Infinity;
+
+
+            items.forEach(item => {
+
+              const itemCenter =
+                item.offsetTop +
+                item.offsetHeight / 2;
+
+
+              const distance =
+                Math.abs(
+                  center -
+                  itemCenter
+                );
+
+
+              if(
+                distance <
+                smallestDistance
+              ){
+
+                smallestDistance =
+                  distance;
+
+                closest =
+                  item;
+
+              }
+
+            });
+
+
+            return closest;
+
+          }
+
+
+          /* =============================================
+             UPDATE SELECTED
+          ============================================= */
+
+          function updateSelected(wheel){
+
+            const selected =
+              getClosestItem(
+                wheel
+              );
+
+
+            if(!selected) return;
+
+
+            const items =
+              wheel.querySelectorAll(
+                ".time-wheel-item[data-value]"
+              );
+
+
+            items.forEach(item => {
+
+              item.classList.remove(
+                "selected"
+              );
+
+            });
+
+
+            selected.classList.add(
+              "selected"
+            );
+
+
+            const value =
+              Number(
+                selected.dataset.value
+              );
+
+
+            if(
+              wheel.dataset.type ===
+              "hours"
+            ){
+
+              hrsInput.value =
+                value;
+
+            }else{
+
+              minsInput.value =
+                value;
+
+            }
+
+
+            updateTotalFromInputs();
+
+          }
+
+
+          /* =============================================
+             SNAP TO NUMBER
+          ============================================= */
+
+          function snapWheel(wheel){
+
+            const selected =
+              getClosestItem(
+                wheel
+              );
+
+
+            if(!selected) return;
+
+
+            const target =
+              selected.offsetTop -
+              (
+                wheel.clientHeight -
+                selected.offsetHeight
+              ) / 2;
+
+
+            wheel.scrollTo({
+
+              top:target,
+
+              behavior:"smooth"
+
+            });
+
+          }
+
+
+          /* =============================================
+             SCROLL EVENT
+          ============================================= */
+
+          let hoursTimer;
+
+          let minutesTimer;
+
+
+          hoursWheel.addEventListener(
+            "scroll",
+            () => {
+
+              updateSelected(
+                hoursWheel
+              );
+
+
+              clearTimeout(
+                hoursTimer
+              );
+
+
+              hoursTimer =
+                setTimeout(
+                  () => {
+
+                    snapWheel(
+                      hoursWheel
+                    );
+
+                  },
+                  100
+                );
+
+            },
+            {
+              passive:true
+            }
+          );
+
+
+          minutesWheel.addEventListener(
+            "scroll",
+            () => {
+
+              updateSelected(
+                minutesWheel
+              );
+
+
+              clearTimeout(
+                minutesTimer
+              );
+
+
+              minutesTimer =
+                setTimeout(
+                  () => {
+
+                    snapWheel(
+                      minutesWheel
+                    );
+
+                  },
+                  100
+                );
+
+            },
+            {
+              passive:true
+            }
+          );
+
+
+          /* =============================================
+             MOUSE WHEEL
+          ============================================= */
+
+          function wheelScroll(
+            event,
+            wheel
+          ){
+
+            event.preventDefault();
+
+
+            const direction =
+              event.deltaY > 0
+                ? 1
+                : -1;
+
+
+            wheel.scrollBy({
+
+              top:
+                direction *
+                wheel
+                  .querySelector(
+                    ".time-wheel-item"
+                  )
+                  .offsetHeight,
+
+              behavior:"smooth"
+
+            });
+
+          }
+
+
+          hoursWheel.addEventListener(
+            "wheel",
+            event => {
+
+              wheelScroll(
+                event,
+                hoursWheel
+              );
+
+            },
+            {
+              passive:false
+            }
+          );
+
+
+          minutesWheel.addEventListener(
+            "wheel",
+            event => {
+
+              wheelScroll(
+                event,
+                minutesWheel
+              );
+
+            },
+            {
+              passive:false
+            }
+          );
+
+
+          /* =============================================
+             KEYBOARD
+          ============================================= */
+
+          function keyboardScroll(
+            event,
+            wheel
+          ){
+
+            if(
+              event.key !== "ArrowUp" &&
+              event.key !== "ArrowDown"
+            ){
+
+              return;
+
+            }
+
+
+            event.preventDefault();
+
+
+            const itemHeight =
+              wheel.querySelector(
+                ".time-wheel-item"
+              ).offsetHeight;
+
+
+            const direction =
+              event.key === "ArrowDown"
+                ? 1
+                : -1;
+
+
+            wheel.scrollBy({
+
+              top:
+                direction *
+                itemHeight,
+
+              behavior:"smooth"
+
+            });
+
+          }
+
+
+          hoursWheel.addEventListener(
+            "keydown",
+            event => {
+
+              keyboardScroll(
+                event,
+                hoursWheel
+              );
+
+            }
+          );
+
+
+          minutesWheel.addEventListener(
+            "keydown",
+            event => {
+
+              keyboardScroll(
+                event,
+                minutesWheel
+              );
+
+            }
+          );
+
+
+          /* =============================================
+             CLICK NUMBER
+          ============================================= */
+
+          container
+            .querySelectorAll(
+              ".time-wheel-item[data-value]"
+            )
+            .forEach(item => {
+
+              item.addEventListener(
+                "click",
+                () => {
+
+                  const wheel =
+                    item.closest(
+                      ".time-wheel"
+                    );
+
+
+                  const target =
+                    item.offsetTop -
+                    (
+                      wheel.clientHeight -
+                      item.offsetHeight
+                    ) / 2;
+
+
+                  wheel.scrollTo({
+
+                    top:target,
+
+                    behavior:"smooth"
+
+                  });
+
+                }
+              );
+
+            });
+
+
+          /* =============================================
+             INITIAL POSITION
+          ============================================= */
+
+          requestAnimationFrame(() => {
+
+
+            const firstHour =
+              hoursWheel.querySelector(
+                ".time-wheel-item[data-value='1']"
+              );
+
+
+            const firstMinute =
+              minutesWheel.querySelector(
+                ".time-wheel-item[data-value='1']"
+              );
+
+
+            if(firstHour){
+
+              hoursWheel.scrollTop =
+                firstHour.offsetTop -
+                (
+                  hoursWheel.clientHeight -
+                  firstHour.offsetHeight
+                ) / 2;
+
+            }
+
+
+            if(firstMinute){
+
+              minutesWheel.scrollTop =
+                firstMinute.offsetTop -
+                (
+                  minutesWheel.clientHeight -
+                  firstMinute.offsetHeight
+                ) / 2;
+
+            }
+
+
+            updateSelected(
+              hoursWheel
+            );
+
+
+            updateSelected(
+              minutesWheel
+            );
+
+          });
+
+        });
 
     }
 
@@ -1723,6 +2553,7 @@
 
       btn.disabled = true;
 
+
       btn.innerText =
         "Submitting...";
 
@@ -1747,6 +2578,7 @@
 
       cards.forEach(card => {
 
+
         const taskName =
           card.querySelector(
             ".task-name"
@@ -1770,7 +2602,8 @@
 
 
         totalMinutes +=
-          (hrs * 60) + mins;
+          (hrs * 60) +
+          mins;
 
 
         if(taskName){
@@ -1840,19 +2673,31 @@
       );
 
 
+      /* Clear hours */
+
       document
-        .querySelectorAll(".hrs")
+        .querySelectorAll(
+          ".hrs"
+        )
         .forEach(
-          i => i.value = ""
+          input =>
+            input.value = ""
         );
 
 
+      /* Clear minutes */
+
       document
-        .querySelectorAll(".mins")
+        .querySelectorAll(
+          ".mins"
+        )
         .forEach(
-          i => i.value = ""
+          input =>
+            input.value = ""
         );
 
+
+      /* Clear note */
 
       document.getElementById(
         "dayNote"
@@ -1866,8 +2711,10 @@
       document.getElementById(
         "totalHours"
       ).innerText =
-        (totalMinutes / 60)
-          .toFixed(1);
+        (
+          totalMinutes /
+          60
+        ).toFixed(1);
 
 
       updateTotalDisplay(
