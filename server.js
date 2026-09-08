@@ -1,205 +1,105 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-
-// ======================================================
-// FETCH — Render / Node compatible
-// ======================================================
-const fetch = (...args) =>
-  import('node-fetch').then(({ default: fetch }) => fetch(...args));
+const express = require("express");
+const bodyParser = require("body-parser");
 
 const app = express();
 
 app.use(bodyParser.json());
-app.use(express.static('public'));
+app.use(express.static("public"));
 
 const PORT = process.env.PORT || 3000;
 
-
-// ======================================================
-// GOOGLE APPS SCRIPT URL
-// ======================================================
-
+// Google Apps Script Web App URL
 const SCRIPT_URL =
-  'https://script.google.com/macros/s/AKfycbw1B1qSBKI2KcJtYIakcAOml4ahucgJyG0YJKq19T8__UEzuehu0g8yD_QMvxM7wK_uvw/exec';
+  "https://script.google.com/macros/s/AKfycbw1B1qSBKI2KcJtYIakcAOml4ahucgJyG0YJKq19T8__UEzuehu0g8yD_QMvxM7wK_uvw/exec";
+
+// ======================================================
+// FETCH
+// ======================================================
+
+const fetch = (...args) =>
+  import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
 
 // ======================================================
 // LOGIN
-// EMPLOYEE DATA COMES FROM GOOGLE SHEET
 // ======================================================
 
-app.post('/login', async (req, res) => {
-
+app.post("/login", async (req, res) => {
   try {
-
-    const id = String(req.body.id || '').trim();
-    const password = String(req.body.password || '').trim();
-
-    // ------------------------------------------
-    // VALIDATE INPUT
-    // ------------------------------------------
+    const { id, password } = req.body;
 
     if (!id || !password) {
-
       return res.json({
         success: false,
-        message: 'Employee ID and password are required'
+        message: "Employee ID and password are required"
       });
-
     }
-
-
-    // ------------------------------------------
-    // GET EMPLOYEES FROM GOOGLE APPS SCRIPT
-    // ------------------------------------------
 
     const response = await fetch(
       ${SCRIPT_URL}?type=employees
     );
 
-
-    if (!response.ok) {
-
-      throw new Error(
-        Apps Script returned HTTP ${response.status}
-      );
-
-    }
-
-
     const text = await response.text();
 
-    console.log('EMPLOYEES RAW RESPONSE:', text);
-
+    console.log("EMPLOYEES RESPONSE:");
+    console.log(text);
 
     let employees;
 
     try {
-
       employees = JSON.parse(text);
-
     } catch (parseError) {
-
-      console.error(
-        'EMPLOYEE JSON ERROR:',
-        parseError
-      );
+      console.error("EMPLOYEES JSON ERROR:", parseError);
 
       return res.status(500).json({
         success: false,
-        message: 'Invalid response from Google Sheet'
+        message: "Invalid response from Google Apps Script"
       });
-
     }
 
+    const loginId = String(id).trim().toLowerCase();
+    const loginPassword = String(password).trim();
 
-    // ------------------------------------------
-    // MAKE SURE EMPLOYEES IS AN ARRAY
-    // ------------------------------------------
+    const user = employees.find((emp) => {
+      const username = String(emp.username || "")
+        .trim()
+        .toLowerCase();
 
-    if (!Array.isArray(employees)) {
-
-      console.error(
-        'EMPLOYEES IS NOT AN ARRAY:',
-        employees
-      );
-
-      return res.status(500).json({
-        success: false,
-        message: 'Employee data is invalid'
-      });
-
-    }
-
-
-    // ------------------------------------------
-    // FIND EMPLOYEE
-    // ------------------------------------------
-
-    const user = employees.find(emp => {
-
-      const sheetUsername =
-        String(emp.username ?? '').trim().toLowerCase();
-
-      const sheetPassword =
-        String(emp.password ?? '').trim();
-
-      const enteredUsername =
-        id.toLowerCase();
-
-      const enteredPassword =
-        password;
+      const empPassword = String(emp.password || "").trim();
 
       return (
-        sheetUsername === enteredUsername &&
-        sheetPassword === enteredPassword
+        username === loginId &&
+        empPassword === loginPassword
       );
-
     });
 
-
-    // ------------------------------------------
-    // LOGIN SUCCESS
-    // ------------------------------------------
-
-    if (user) {
-
-      console.log(
-        LOGIN SUCCESS: ${user.username}
-      );
+    if (!user) {
+      console.log("LOGIN FAILED:", id);
 
       return res.json({
-
-        success: true,
-
-        user: {
-
-          id: String(user.username).trim(),
-
-          designation:
-            String(user.designation ?? '').trim()
-
-        }
-
+        success: false,
+        message: "Invalid Employee ID or Password"
       });
-
     }
 
-
-    // ------------------------------------------
-    // LOGIN FAILED
-    // ------------------------------------------
-
-    console.log(
-      LOGIN FAILED: ${id}
-    );
+    console.log("LOGIN SUCCESS:", user.username);
 
     return res.json({
-
-      success: false,
-
-      message: 'Invalid Employee ID or Password'
-
+      success: true,
+      user: {
+        id: user.username,
+        designation: user.designation || ""
+      }
     });
 
-
-  } catch (err) {
-
-    console.error(
-      'LOGIN ERROR:',
-      err
-    );
+  } catch (error) {
+    console.error("LOGIN ERROR:", error);
 
     return res.status(500).json({
-
       success: false,
-
-      message: 'Unable to connect to employee database'
-
+      message: "Login server error"
     });
-
   }
-
 });
 
 
@@ -207,53 +107,32 @@ app.post('/login', async (req, res) => {
 // GET ASSIGNED TASKS
 // ======================================================
 
-app.get('/tasks/:name', async (req, res) => {
-
+app.get("/tasks/:name", async (req, res) => {
   try {
+    const user = req.params.name;
 
-    const user =
-      String(req.params.name || '').trim();
+    const url =
+      ${SCRIPT_URL}?type=tasks&user=${encodeURIComponent(user)};
 
+    console.log("TASK CALL:", url);
 
-    const response = await fetch(
+    const response = await fetch(url);
 
-      ${SCRIPT_URL}?type=tasks&user=${encodeURIComponent(user)}
+    const text = await response.text();
 
-    );
+    console.log("TASK RAW:", text);
 
-
-    const text =
-      await response.text();
-
-
-    console.log(
-      'TASK RAW:',
-      text
-    );
-
-
-    const data =
-      JSON.parse(text);
-
+    const data = JSON.parse(text);
 
     res.json(data);
 
-
-  } catch (err) {
-
-    console.error(
-      'TASK ERROR:',
-      err
-    );
+  } catch (error) {
+    console.error("TASK ERROR:", error);
 
     res.status(500).json({
-
-      error: err.message
-
+      error: "Failed to load tasks"
     });
-
   }
-
 });
 
 
@@ -261,60 +140,32 @@ app.get('/tasks/:name', async (req, res) => {
 // SUBMIT / ASSIGN / REMOVE
 // ======================================================
 
-app.post('/submit', async (req, res) => {
-
+app.post("/submit", async (req, res) => {
   try {
+    const response = await fetch(SCRIPT_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(req.body)
+    });
 
-    const response =
-      await fetch(SCRIPT_URL, {
+    const text = await response.text();
 
-        method: 'POST',
-
-        headers: {
-
-          'Content-Type':
-            'application/json'
-
-        },
-
-        body:
-          JSON.stringify(req.body)
-
-      });
-
-
-    const text =
-      await response.text();
-
-
-    console.log(
-      'SUBMIT RAW:',
-      text
-    );
-
+    console.log("SUBMIT RAW:", text);
 
     res.json({
-
       success: true
-
     });
 
-
-  } catch (err) {
-
-    console.error(
-      'SUBMIT ERROR:',
-      err
-    );
+  } catch (error) {
+    console.error("SUBMIT ERROR:", error);
 
     res.status(500).json({
-
-      error: 'Failed'
-
+      success: false,
+      error: "Failed"
     });
-
   }
-
 });
 
 
@@ -322,60 +173,32 @@ app.post('/submit', async (req, res) => {
 // TASK SUMMARY
 // ======================================================
 
-app.get('/task-summary/:user', async (req, res) => {
-
+app.get("/task-summary/:user", async (req, res) => {
   try {
-
-    const user =
-      String(req.params.user || '').trim();
-
+    const user = req.params.user;
 
     const url =
       ${SCRIPT_URL}?type=taskSummary&user=${encodeURIComponent(user)};
 
+    console.log("SUMMARY CALL:", url);
 
-    console.log(
-      'SUMMARY CALL:',
-      url
-    );
+    const response = await fetch(url);
 
+    const text = await response.text();
 
-    const response =
-      await fetch(url);
+    console.log("SUMMARY RAW:", text);
 
-
-    const text =
-      await response.text();
-
-
-    console.log(
-      'SUMMARY RAW:',
-      text
-    );
-
-
-    const data =
-      JSON.parse(text);
-
+    const data = JSON.parse(text);
 
     res.json(data);
 
-
-  } catch (err) {
-
-    console.error(
-      'SUMMARY ERROR:',
-      err
-    );
+  } catch (error) {
+    console.error("SUMMARY ERROR:", error);
 
     res.status(500).json({
-
-      error: 'Failed'
-
+      error: "Failed"
     });
-
   }
-
 });
 
 
@@ -383,54 +206,32 @@ app.get('/task-summary/:user', async (req, res) => {
 // PROFILE
 // ======================================================
 
-app.get('/profile/:user', async (req, res) => {
-
+app.get("/profile/:user", async (req, res) => {
   try {
+    const user = req.params.user;
 
-    const user =
-      String(req.params.user || '').trim();
+    const url =
+      ${SCRIPT_URL}?type=profile&user=${encodeURIComponent(user)};
 
+    console.log("PROFILE CALL:", url);
 
-    const response =
-      await fetch(
+    const response = await fetch(url);
 
-        ${SCRIPT_URL}?type=profile&user=${encodeURIComponent(user)}
+    const text = await response.text();
 
-      );
+    console.log("PROFILE RAW:", text);
 
-
-    const text =
-      await response.text();
-
-
-    console.log(
-      'PROFILE RAW:',
-      text
-    );
-
-
-    const data =
-      JSON.parse(text);
-
+    const data = JSON.parse(text);
 
     res.json(data);
 
-
-  } catch (err) {
-
-    console.error(
-      'PROFILE ERROR:',
-      err
-    );
+  } catch (error) {
+    console.error("PROFILE ERROR:", error);
 
     res.status(500).json({
-
-      error: 'Failed'
-
+      error: "Failed"
     });
-
   }
-
 });
 
 
@@ -438,53 +239,30 @@ app.get('/profile/:user', async (req, res) => {
 // HISTORY
 // ======================================================
 
-app.get('/history/:user', async (req, res) => {
-
+app.get("/history/:user", async (req, res) => {
   try {
+    const user = req.params.user;
 
-    const user =
-      String(req.params.user || '').trim();
+    const url =
+      ${SCRIPT_URL}?type=taskHistory&user=${encodeURIComponent(user)};
 
+    console.log("HISTORY CALL:", url);
 
-    const response =
-      await fetch(
+    const response = await fetch(url);
 
-        ${SCRIPT_URL}?type=taskHistory&user=${encodeURIComponent(user)}
+    const text = await response.text();
 
-      );
-
-
-    const text =
-      await response.text();
-
-
-    console.log(
-      'APPS SCRIPT HISTORY RESPONSE:'
-    );
-
-    console.log(text);
-
+    console.log("HISTORY RAW:", text);
 
     res.send(text);
 
-
-  } catch (err) {
-
-    console.error(
-      'HISTORY ERROR:',
-      err
-    );
+  } catch (error) {
+    console.error("HISTORY ERROR:", error);
 
     res.status(500).json({
-
-      error: err.message,
-
-      stack: err.stack
-
+      error: error.message
     });
-
   }
-
 });
 
 
@@ -492,12 +270,8 @@ app.get('/history/:user', async (req, res) => {
 // HOME
 // ======================================================
 
-app.get('/', (req, res) => {
-
-  res.sendFile(
-    __dirname + '/public/login.html'
-  );
-
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/public/login.html");
 });
 
 
@@ -506,9 +280,5 @@ app.get('/', (req, res) => {
 // ======================================================
 
 app.listen(PORT, () => {
-
-  console.log(
-    `Server running on port ${PORT}`
-  );
-
+  console.log(`Server running on port ${PORT}`);
 });
