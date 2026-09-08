@@ -477,7 +477,7 @@
     .projects-table th,
     .projects-table td{
 
-      height:54px;
+      height:58px;
 
       padding:6px 14px;
 
@@ -664,7 +664,7 @@
 
 
     /* =====================================================
-       INDIVIDUAL NUMBER WHEEL
+       NUMBER WHEELS
     ===================================================== */
 
     .time-wheel{
@@ -742,8 +742,6 @@
     }
 
 
-    /* Selected number */
-
     .time-wheel-item.selected{
 
       color:#252525;
@@ -755,7 +753,9 @@
     }
 
 
-    /* Spacer */
+    /* =====================================================
+       SPACERS
+    ===================================================== */
 
     .time-wheel-item.spacer{
 
@@ -827,9 +827,7 @@
 
 
     /* =====================================================
-       HIDDEN ORIGINAL INPUTS
-       These remain because submitWork()
-       reads .hrs and .mins.
+       HIDDEN INPUTS
     ===================================================== */
 
     .time-input input{
@@ -1300,7 +1298,9 @@
 
     @media(prefers-reduced-motion:reduce){
 
-      *{
+      *,
+      *::before,
+      *::after{
 
         transition:none !important;
 
@@ -1474,7 +1474,7 @@
       </table>
 
 
-      <!-- Existing dashboard logic -->
+      <!-- Existing logic -->
 
       <span
         id="taskCount"
@@ -1691,7 +1691,7 @@
 
 
     /* =====================================================
-       UPDATE TOTAL
+       TOTAL FROM INPUTS
     ===================================================== */
 
     function updateTotalFromInputs(){
@@ -1720,7 +1720,8 @@
 
 
           totalMinutes +=
-            (hrs * 60) + mins;
+            (hrs * 60) +
+            mins;
 
         });
 
@@ -1853,8 +1854,8 @@
 
 
               <!-- =========================================
-                   HOURS WHEEL
-                   01 - 12
+                   HOURS
+                   00 - 23
               ========================================== -->
 
               <div
@@ -1870,14 +1871,14 @@
 
 
                 ${Array.from(
-                  {length:12},
+                  {length:24},
                   (_,i)=>`
 
                     <div
                       class="time-wheel-item"
-                      data-value="${i + 1}"
+                      data-value="${i}"
                     >
-                      ${String(i + 1).padStart(2,"0")}
+                      ${String(i).padStart(2,"0")}
                     </div>
 
                   `
@@ -1899,8 +1900,8 @@
 
 
               <!-- =========================================
-                   MINUTES WHEEL
-                   01 - 60
+                   MINUTES
+                   00 - 59
               ========================================== -->
 
               <div
@@ -1921,9 +1922,9 @@
 
                     <div
                       class="time-wheel-item"
-                      data-value="${i + 1}"
+                      data-value="${i}"
                     >
-                      ${String(i + 1).padStart(2,"0")}
+                      ${String(i).padStart(2,"0")}
                     </div>
 
                   `
@@ -1939,13 +1940,12 @@
 
               <!-- =========================================
                    ORIGINAL INPUTS
-                   Kept for existing submitWork()
               ========================================== -->
 
               <input
                 type="number"
                 min="0"
-                max="12"
+                max="23"
                 class="hrs"
                 aria-hidden="true"
                 tabindex="-1"
@@ -1955,7 +1955,7 @@
               <input
                 type="number"
                 min="0"
-                max="60"
+                max="59"
                 class="mins"
                 aria-hidden="true"
                 tabindex="-1"
@@ -1974,8 +1974,6 @@
 
       });
 
-
-      /* Initialize wheels */
 
       setupTimeWheels();
 
@@ -2183,12 +2181,10 @@
 
 
           /* =============================================
-             SCROLL EVENT
+             HOURS SCROLL
           ============================================= */
 
           let hoursTimer;
-
-          let minutesTimer;
 
 
           hoursWheel.addEventListener(
@@ -2222,6 +2218,13 @@
               passive:true
             }
           );
+
+
+          /* =============================================
+             MINUTES SCROLL
+          ============================================= */
+
+          let minutesTimer;
 
 
           minutesWheel.addEventListener(
@@ -2269,6 +2272,15 @@
             event.preventDefault();
 
 
+            const item =
+              wheel.querySelector(
+                ".time-wheel-item"
+              );
+
+
+            if(!item) return;
+
+
             const direction =
               event.deltaY > 0
                 ? 1
@@ -2279,11 +2291,7 @@
 
               top:
                 direction *
-                wheel
-                  .querySelector(
-                    ".time-wheel-item"
-                  )
-                  .offsetHeight,
+                item.offsetHeight,
 
               behavior:"smooth"
 
@@ -2346,10 +2354,13 @@
             event.preventDefault();
 
 
-            const itemHeight =
+            const item =
               wheel.querySelector(
                 ".time-wheel-item"
-              ).offsetHeight;
+              );
+
+
+            if(!item) return;
 
 
             const direction =
@@ -2362,7 +2373,7 @@
 
               top:
                 direction *
-                itemHeight,
+                item.offsetHeight,
 
               behavior:"smooth"
 
@@ -2440,7 +2451,7 @@
 
 
           /* =============================================
-             INITIAL POSITION
+             START AT 00
           ============================================= */
 
           requestAnimationFrame(() => {
@@ -2448,13 +2459,13 @@
 
             const firstHour =
               hoursWheel.querySelector(
-                ".time-wheel-item[data-value='1']"
+                ".time-wheel-item[data-value='0']"
               );
 
 
             const firstMinute =
               minutesWheel.querySelector(
-                ".time-wheel-item[data-value='1']"
+                ".time-wheel-item[data-value='0']"
               );
 
 
@@ -2673,7 +2684,7 @@
       );
 
 
-      /* Clear hours */
+      /* Clear hour values */
 
       document
         .querySelectorAll(
@@ -2685,7 +2696,7 @@
         );
 
 
-      /* Clear minutes */
+      /* Clear minute values */
 
       document
         .querySelectorAll(
