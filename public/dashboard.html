@@ -1,16 +1,76 @@
 <!DOCTYPE html>
 <html>
 <head>
+
   <title>Employee Dashboard</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- =====================================================
+       PROFESSIONAL CORPORATE FONTS
+  ====================================================== -->
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
 
   <style>
 
-    /* ================= RESET ================= */
+    /* =====================================================
+       CORPORATE OFFICE DESIGN SYSTEM
+    ===================================================== */
+
+    :root{
+
+      /* Backgrounds */
+
+      --page:#F5F5F3;
+      --white:#FFFFFF;
+      --surface:#FAFAF9;
+
+      /* Text */
+
+      --heading:#252525;
+      --text:#303030;
+      --secondary:#5F6368;
+      --muted:#85898D;
+
+      /* Borders */
+
+      --border:#DDDFE2;
+      --border-dark:#C9CCCF;
+
+      /* Accent */
+
+      --accent:#2F6B4F;
+      --accent-dark:#285B43;
+      --accent-soft:#EDF4EF;
+      --accent-border:#D3E2D8;
+
+      /* Table */
+
+      --table-head:#303030;
+      --table-total:#F0F0ED;
+
+      /* Shadows */
+
+      --shadow-sm:
+        0 1px 3px rgba(0,0,0,.04);
+
+      --shadow:
+        0 4px 14px rgba(0,0,0,.06);
+
+    }
+
+
+    /* =====================================================
+       RESET
+    ===================================================== */
 
     *{
       margin:0;
@@ -18,406 +78,1096 @@
       box-sizing:border-box;
     }
 
-    body{
-      font-family:'Inter',sans-serif;
-      background:#ffffff;
-      color:#171717;
-      overflow-x:hidden;
+
+    html{
+      scroll-behavior:smooth;
     }
+
+
+    body{
+
+      font-family:'Inter',sans-serif;
+
+      background:var(--page);
+
+      color:var(--text);
+
+      min-height:100vh;
+
+      overflow-x:hidden;
+
+      -webkit-font-smoothing:antialiased;
+
+      text-rendering:optimizeLegibility;
+
+    }
+
 
     button,
     input,
     textarea{
-      font-family:inherit;
+
+      font-family:'Inter',sans-serif;
+
     }
 
-    /* ================= MAIN ================= */
+
+    button{
+
+      -webkit-tap-highlight-color:transparent;
+
+    }
+
+
+    /* =====================================================
+       MAIN CONTAINER
+    ===================================================== */
 
     .main{
+
       width:100%;
-      max-width:760px;
+
+      max-width:790px;
+
       margin:0 auto;
-      padding:54px 34px 52px;
+
+      padding:52px 34px 54px;
+
     }
 
-    /* ================= GREETING ================= */
+
+    /* =====================================================
+       HEADER
+    ===================================================== */
 
     .topbar{
-      margin-bottom:42px;
+
+      margin-bottom:40px;
+
+      padding-bottom:24px;
+
+      border-bottom:1px solid var(--border);
+
     }
+
+
+    .topbar::before{
+
+      content:"";
+
+      display:block;
+
+      width:34px;
+
+      height:3px;
+
+      background:var(--accent);
+
+      margin-bottom:17px;
+
+      border-radius:3px;
+
+    }
+
 
     .topbar h1{
-      font-family:'Fredoka','Manrope',sans-serif;
-      font-size:54px;
-      line-height:1;
-      letter-spacing:-1.8px;
-      font-weight:700;
-      color:#050505;
+
+      font-family:'Manrope',sans-serif;
+
+      font-size:42px;
+
+      line-height:1.1;
+
+      letter-spacing:-1.5px;
+
+      font-weight:800;
+
+      color:var(--heading);
+
     }
 
-    /* ================= DATE ================= */
+
+    /* =====================================================
+       LABELS
+    ===================================================== */
+
+    .field-label,
+    .projects-title{
+
+      display:block;
+
+      font-family:'Inter',sans-serif;
+
+      font-size:13px;
+
+      line-height:1.4;
+
+      font-weight:600;
+
+      color:var(--text);
+
+      margin-bottom:8px;
+
+      letter-spacing:.05px;
+
+    }
+
+
+    /* =====================================================
+       DATE
+    ===================================================== */
 
     .date-section{
-      margin-bottom:29px;
+
+      margin-bottom:27px;
+
     }
 
-    .field-label{
-      display:block;
-      font-size:17px;
-      line-height:1.3;
-      font-weight:400;
-      margin-bottom:5px;
-      color:#171717;
-    }
 
     .date-row{
+
       display:flex;
+
       align-items:center;
-      gap:9px;
+
+      gap:8px;
+
       position:relative;
+
     }
+
 
     .date-display{
+
       flex:1;
+
       min-width:0;
-      height:40px;
+
+      height:44px;
+
       display:flex;
+
       align-items:center;
-      padding:0 14px;
-      background:#e7e7e7;
-      border:0;
-      font-size:17px;
-      color:#222;
+
+      padding:0 13px;
+
+      background:var(--white);
+
+      border:1px solid var(--border);
+
+      border-radius:6px;
+
+      font-size:14px;
+
+      font-weight:500;
+
+      color:var(--text);
+
       cursor:pointer;
+
       text-align:left;
+
+      box-shadow:var(--shadow-sm);
+
+      transition:
+
+        border-color .18s ease,
+
+        box-shadow .18s ease;
+
     }
+
 
     .date-display:hover{
-      background:#dedede;
+
+      border-color:var(--border-dark);
+
+      box-shadow:var(--shadow);
+
     }
+
 
     .date-display:focus{
+
       outline:none;
-      box-shadow:inset 0 0 0 1px #c8c8c8;
+
+      border-color:#A7AAA8;
+
+      box-shadow:
+
+        0 0 0 2px rgba(47,107,79,.08);
+
     }
+
 
     .date-edit{
-      width:50px;
-      height:40px;
-      border:0;
-      background:#eeeeee;
+
+      width:44px;
+
+      height:44px;
+
+      flex-shrink:0;
+
       display:flex;
+
       align-items:center;
+
       justify-content:center;
+
+      border:1px solid var(--border);
+
+      border-radius:6px;
+
+      background:var(--white);
+
       cursor:pointer;
-      transition:.2s ease;
+
+      box-shadow:var(--shadow-sm);
+
+      transition:
+
+        background .18s ease,
+
+        border-color .18s ease;
+
     }
+
 
     .date-edit:hover{
-      background:#dedede;
+
+      background:#F1F2F0;
+
+      border-color:var(--border-dark);
+
     }
+
 
     .date-edit svg{
-      width:22px;
-      height:22px;
-      stroke:#111;
-      stroke-width:2;
+
+      width:18px;
+
+      height:18px;
+
+      stroke:#5F6368;
+
+      stroke-width:1.8;
+
       fill:none;
+
     }
+
 
     #workDate{
+
       position:absolute;
+
       left:0;
+
       top:0;
-      width:calc(100% - 59px);
-      height:40px;
+
+      width:calc(100% - 52px);
+
+      height:44px;
+
       opacity:0;
+
       cursor:pointer;
+
       z-index:5;
+
       border:0;
+
     }
 
-    /* ================= DAY NOTE ================= */
+
+    /* =====================================================
+       DAY NOTE
+    ===================================================== */
 
     .day-section{
+
       margin-bottom:29px;
+
     }
+
 
     #dayNote{
+
       display:block;
+
       width:100%;
-      height:177px;
-      padding:14px;
-      border:0;
-      border-radius:0;
+
+      height:145px;
+
+      padding:13px 14px;
+
+      background:var(--white);
+
+      border:1px solid var(--border);
+
+      border-radius:6px;
+
       outline:none;
+
       resize:none;
-      background:#e7e7e7;
-      font-size:16px;
-      line-height:1.5;
-      color:#222;
+
+      font-size:14px;
+
+      line-height:1.6;
+
+      font-weight:400;
+
+      color:var(--text);
+
+      box-shadow:var(--shadow-sm);
+
+      transition:
+
+        border-color .18s ease,
+
+        box-shadow .18s ease;
+
     }
+
+
+    #dayNote:hover{
+
+      border-color:var(--border-dark);
+
+    }
+
 
     #dayNote:focus{
-      box-shadow:inset 0 0 0 1px #c8c8c8;
+
+      border-color:#A7AAA8;
+
+      box-shadow:
+
+        0 0 0 2px rgba(47,107,79,.08);
+
     }
+
 
     #dayNote::placeholder{
-      color:#777;
+
+      color:#A0A3A6;
+
     }
 
-    /* ================= PROJECTS ================= */
+
+    /* =====================================================
+       PROJECT SECTION
+    ===================================================== */
 
     .projects-section{
-      margin-bottom:34px;
+
+      margin-bottom:30px;
+
     }
 
-    .projects-title{
-      display:block;
-      font-size:17px;
-      line-height:1.3;
-      font-weight:400;
-      margin-bottom:7px;
-    }
 
     .projects-table{
+
       width:100%;
+
       border-collapse:separate;
-      border-spacing:5px 3px;
-      margin-left:-5px;
-      width:calc(100% + 10px);
+
+      border-spacing:0 5px;
+
     }
+
 
     .projects-table th,
     .projects-table td{
-      height:30px;
-      padding:3px 13px;
+
+      height:42px;
+
+      padding:6px 14px;
+
       text-align:left;
+
       vertical-align:middle;
-      background:#e7e7e7;
-      font-size:16px;
-      font-weight:400;
+
+      font-size:13px;
+
     }
 
+
+    /* =====================================================
+       TABLE HEADER
+    ===================================================== */
+
     .projects-table th{
-      height:30px;
-      background:#b9b9b9;
-      color:#fff;
-      font-weight:400;
+
+      height:40px;
+
+      background:var(--table-head);
+
+      color:#FFFFFF;
+
+      font-size:12px;
+
+      font-weight:600;
+
+      letter-spacing:.2px;
+
+      text-transform:uppercase;
+
     }
+
+
+    .projects-table th:first-child{
+
+      border-radius:5px 0 0 5px;
+
+    }
+
+
+    .projects-table th:last-child{
+
+      border-radius:0 5px 5px 0;
+
+    }
+
 
     .projects-table th:first-child,
     .projects-table td:first-child{
+
       width:65%;
+
     }
+
 
     .projects-table th:last-child,
     .projects-table td:last-child{
+
       width:35%;
+
     }
+
+
+    /* =====================================================
+       PROJECT ROWS
+    ===================================================== */
+
+    .projects-table tbody tr td{
+
+      background:var(--white);
+
+      border-top:1px solid var(--border);
+
+      border-bottom:1px solid var(--border);
+
+      transition:
+
+        background .15s ease,
+
+        border-color .15s ease;
+
+    }
+
+
+    .projects-table tbody tr td:first-child{
+
+      border-left:1px solid var(--border);
+
+      border-radius:5px 0 0 5px;
+
+    }
+
+
+    .projects-table tbody tr td:last-child{
+
+      border-right:1px solid var(--border);
+
+      border-radius:0 5px 5px 0;
+
+    }
+
+
+    .projects-table tbody tr:hover td{
+
+      background:#FCFCFB;
+
+      border-color:#D4D6D8;
+
+    }
+
 
     .project-cell{
+
       overflow:hidden;
+
       text-overflow:ellipsis;
+
       white-space:nowrap;
+
+      color:var(--text);
+
+      font-weight:500;
+
     }
+
+
+    /* =====================================================
+       HOURS INPUT
+    ===================================================== */
 
     .hours-cell{
-      padding:0 !important;
+
+      padding:4px 8px !important;
+
     }
+
 
     .time-input{
+
       width:100%;
-      height:30px;
+
+      height:32px;
+
       display:flex;
+
       align-items:center;
-      justify-content:flex-start;
-      padding:0 13px;
-      background:#e7e7e7;
+
+      justify-content:center;
+
+      background:#F7F7F6;
+
+      border:1px solid var(--border);
+
+      border-radius:5px;
+
+      transition:
+
+        border-color .18s ease,
+
+        background .18s ease;
+
     }
 
-    .time-input input{
-      width:27px;
-      height:26px;
-      padding:0;
-      border:0;
-      outline:none;
-      background:transparent;
-      color:#171717;
-      font-size:16px;
-      text-align:center;
-      -moz-appearance:textfield;
+
+    .time-input:focus-within{
+
+      background:#FFFFFF;
+
+      border-color:#AEB3B0;
+
+      box-shadow:
+
+        0 0 0 2px rgba(47,107,79,.06);
+
     }
+
+
+    .time-input input{
+
+      width:29px;
+
+      height:26px;
+
+      padding:0;
+
+      border:0;
+
+      outline:none;
+
+      background:transparent;
+
+      color:var(--text);
+
+      font-size:13px;
+
+      font-weight:600;
+
+      text-align:center;
+
+      -moz-appearance:textfield;
+
+    }
+
 
     .time-input input::-webkit-outer-spin-button,
     .time-input input::-webkit-inner-spin-button{
+
       -webkit-appearance:none;
+
       margin:0;
+
     }
+
 
     .time-input input::placeholder{
-      color:#555;
+
+      color:#A5A8AA;
+
       opacity:1;
+
     }
+
 
     .time-colon{
+
       margin:0 1px;
-      font-size:16px;
-      line-height:1;
+
+      color:#777C80;
+
+      font-size:13px;
+
+      font-weight:600;
+
     }
+
+
+    /* =====================================================
+       TOTAL
+    ===================================================== */
 
     .total-row td{
-      background:#d0d0d0;
-      height:30px;
+
+      background:var(--table-total) !important;
+
+      border-top:1px solid var(--border-dark) !important;
+
+      border-bottom:1px solid var(--border-dark) !important;
+
+      height:42px;
+
+      color:var(--heading);
+
+      font-weight:600;
+
     }
+
+
+    .total-row td:first-child{
+
+      border-left:1px solid var(--border-dark) !important;
+
+      border-radius:5px 0 0 5px;
+
+    }
+
+
+    .total-row td:last-child{
+
+      border-right:1px solid var(--border-dark) !important;
+
+      border-radius:0 5px 5px 0;
+
+    }
+
 
     .total-label{
+
       text-align:right !important;
+
       padding-right:14px !important;
+
+      font-size:12px !important;
+
+      text-transform:uppercase;
+
+      letter-spacing:.35px;
+
+      color:#5F6368;
+
     }
+
 
     .total-time{
+
+      font-size:14px;
+
+      font-weight:700;
+
       font-variant-numeric:tabular-nums;
+
+      color:var(--heading);
+
     }
 
-    /* ================= SUBMIT ================= */
+
+    /* =====================================================
+       SUBMIT
+    ===================================================== */
 
     .submit-btn{
+
       display:block;
+
       width:100%;
-      height:40px;
+
+      height:45px;
+
       padding:0 18px;
+
       border:0;
-      border-radius:8px;
-      background:#38b94b;
-      color:#fff;
-      font-size:18px;
-      font-weight:700;
+
+      border-radius:6px;
+
+      background:var(--accent);
+
+      color:#FFFFFF;
+
+      font-family:'Inter',sans-serif;
+
+      font-size:14px;
+
+      font-weight:600;
+
+      letter-spacing:.1px;
+
       cursor:pointer;
-      transition:.2s ease;
-      margin-bottom:7px;
+
+      box-shadow:
+
+        0 3px 8px rgba(47,107,79,.15);
+
+      transition:
+
+        background .18s ease,
+
+        box-shadow .18s ease,
+
+        transform .18s ease;
+
+      margin-bottom:9px;
+
     }
+
 
     .submit-btn:hover{
-      background:#2fab42;
+
+      background:var(--accent-dark);
+
+      transform:translateY(-1px);
+
+      box-shadow:
+
+        0 5px 12px rgba(47,107,79,.18);
+
     }
+
+
+    .submit-btn:active{
+
+      transform:translateY(0);
+
+    }
+
 
     .submit-btn:disabled{
-      opacity:.75;
+
+      opacity:.7;
+
       cursor:wait;
+
+      transform:none;
+
     }
 
-    /* ================= NAV BUTTONS ================= */
+
+    /* =====================================================
+       NAVIGATION
+    ===================================================== */
 
     .bottom-buttons{
+
       display:grid;
+
       grid-template-columns:1fr 1fr;
-      gap:10px;
+
+      gap:9px;
+
     }
+
 
     .nav-btn{
-      height:40px;
-      border:0;
-      border-radius:8px;
-      background:#505050;
-      color:#fff;
-      font-size:18px;
-      font-weight:700;
+
+      height:43px;
+
+      border:1px solid var(--border);
+
+      border-radius:6px;
+
+      background:var(--white);
+
+      color:#4D5154;
+
+      font-size:13px;
+
+      font-weight:600;
+
       cursor:pointer;
-      transition:.2s ease;
+
+      box-shadow:var(--shadow-sm);
+
+      transition:
+
+        background .18s ease,
+
+        border-color .18s ease,
+
+        color .18s ease;
+
     }
+
 
     .nav-btn:hover{
-      background:#3f3f3f;
+
+      background:#F1F2F0;
+
+      border-color:var(--border-dark);
+
+      color:var(--heading);
+
     }
 
-    /* ================= HIDDEN DATA ================= */
+
+    .nav-btn:active{
+
+      background:#EDEDEB;
+
+    }
+
+
+    /* =====================================================
+       HIDDEN DATA
+    ===================================================== */
 
     .task-meta{
+
       display:none;
+
     }
 
-    /* ================= DESKTOP ================= */
 
-    @media(min-width:901px){
+    /* =====================================================
+       MOBILE
+    ===================================================== */
+
+    @media(max-width:700px){
+
       .main{
-        max-width:760px;
+
+        padding:44px 28px 45px;
+
       }
+
+
+      .topbar h1{
+
+        font-size:38px;
+
+      }
+
     }
 
-    /* ================= SMALL SCREENS ================= */
 
     @media(max-width:600px){
 
       .main{
+
         max-width:none;
-        padding:38px 44px 44px;
+
+        padding:36px 22px 40px;
+
       }
+
 
       .topbar{
-        margin-bottom:42px;
+
+        margin-bottom:32px;
+
       }
 
+
       .topbar h1{
-        font-size:48px;
+
+        font-size:35px;
+
+        letter-spacing:-1.2px;
+
       }
+
+
+      #dayNote{
+
+        height:135px;
+
+      }
+
 
       .projects-table th,
       .projects-table td{
-        padding-left:13px;
-        padding-right:13px;
+
+        padding-left:10px;
+
+        padding-right:10px;
+
+      }
+
+
+      .projects-table th{
+
+        font-size:11px;
+
+      }
+
+
+      .projects-table td{
+
+        font-size:12px;
+
       }
 
     }
 
+
     @media(max-width:430px){
 
       .main{
-        padding-left:20px;
-        padding-right:20px;
+
+        padding-left:16px;
+
+        padding-right:16px;
+
       }
 
+
       .topbar h1{
-        font-size:42px;
-        letter-spacing:-1.2px;
+
+        font-size:32px;
+
+        letter-spacing:-1px;
+
       }
+
+
+      .date-display{
+
+        font-size:13px;
+
+      }
+
+
+      .projects-table{
+
+        border-spacing:0 4px;
+
+      }
+
 
       .projects-table th,
       .projects-table td{
-        font-size:14px;
+
+        font-size:11px;
+
       }
+
+
+      .projects-table th:first-child,
+      .projects-table td:first-child{
+
+        width:60%;
+
+      }
+
+
+      .projects-table th:last-child,
+      .projects-table td:last-child{
+
+        width:40%;
+
+      }
+
 
       .time-input input{
-        font-size:14px;
+
+        width:26px;
+
+        font-size:12px;
+
       }
 
-      .nav-btn,
+
       .submit-btn{
-        font-size:16px;
+
+        height:44px;
+
+      }
+
+
+      .nav-btn{
+
+        height:42px;
+
+        font-size:12px;
+
+      }
+
+    }
+
+
+    /* =====================================================
+       ACCESSIBILITY
+    ===================================================== */
+
+    @media(prefers-reduced-motion:reduce){
+
+      *,
+      *::before,
+      *::after{
+
+        transition:none !important;
+
+        animation:none !important;
+
+        scroll-behavior:auto !important;
+
       }
 
     }
 
   </style>
+
 </head>
+
 
 <body>
 
-  <!-- ================= MAIN ================= -->
+
+  <!-- =====================================================
+       MAIN
+  ===================================================== -->
 
   <div class="main">
 
-    <!-- ================= GREETING ================= -->
+
+    <!-- =====================================================
+         GREETING
+    ===================================================== -->
 
     <div class="topbar">
-      <h1 id="welcomeText">Hey, Employee</h1>
+
+      <h1 id="welcomeText">
+        Hey, Employee
+      </h1>
+
     </div>
 
-    <!-- ================= DATE ================= -->
+
+    <!-- =====================================================
+         DATE
+    ===================================================== -->
 
     <section class="date-section">
 
-      <label class="field-label">Date</label>
+      <label class="field-label">
+        Date
+      </label>
+
 
       <div class="date-row">
 
@@ -429,6 +1179,7 @@
           Loading date...
         </div>
 
+
         <button
           type="button"
           class="date-edit"
@@ -436,65 +1187,141 @@
           aria-label="Edit date"
           title="Change date"
         >
-          <svg viewBox="0 0 24 24" aria-hidden="true">
+
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+
             <path d="M12 20h9"></path>
-            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L8 18l-4 1 1-4Z"></path>
+
+            <path
+              d="M16.5 3.5a2.121 2.121 0 0 1 3 3L8 18l-4 1 1-4Z"
+            ></path>
+
           </svg>
+
         </button>
 
-        <input type="date" id="workDate">
+
+        <input
+          type="date"
+          id="workDate"
+        >
 
       </div>
 
     </section>
 
-    <!-- ================= DAY NOTE ================= -->
+
+    <!-- =====================================================
+         DAY NOTE
+    ===================================================== -->
 
     <section class="day-section">
 
-      <label class="field-label" for="dayNote">How was your day?</label>
+      <label
+        class="field-label"
+        for="dayNote"
+      >
+        How was your day?
+      </label>
+
 
       <textarea
         id="dayNote"
-        placeholder=""
+        placeholder="Add a brief note about your day..."
       ></textarea>
 
     </section>
 
-    <!-- ================= PROJECTS ================= -->
+
+    <!-- =====================================================
+         PROJECTS
+    ===================================================== -->
 
     <section class="projects-section">
 
-      <label class="projects-title">How many hours spent on what projects?</label>
+      <label class="projects-title">
+        How many hours spent on what projects?
+      </label>
+
 
       <table class="projects-table">
 
         <thead>
+
           <tr>
-            <th>Projects</th>
-            <th>Hrs</th>
+
+            <th>
+              Projects
+            </th>
+
+            <th>
+              Hrs
+            </th>
+
           </tr>
+
         </thead>
+
 
         <tbody id="tasks"></tbody>
 
+
         <tfoot>
+
           <tr class="total-row">
-            <td class="total-label">Total</td>
-            <td class="total-time" id="totalDisplay">00:00</td>
+
+            <td class="total-label">
+              Total
+            </td>
+
+            <td
+              class="total-time"
+              id="totalDisplay"
+            >
+              00:00
+            </td>
+
           </tr>
+
         </tfoot>
 
       </table>
 
-      <!-- Kept for existing dashboard logic -->
-      <span id="taskCount" class="task-meta">0</span>
-      <span id="taskTotal" class="task-meta">0</span>
-      <span id="totalHours" class="task-meta">0</span>
+
+      <!-- Existing logic -->
+
+      <span
+        id="taskCount"
+        class="task-meta"
+      >
+        0
+      </span>
+
+
+      <span
+        id="taskTotal"
+        class="task-meta"
+      >
+        0
+      </span>
+
+
+      <span
+        id="totalHours"
+        class="task-meta"
+      >
+        0
+      </span>
 
     </section>
 
-    <!-- ================= SUBMIT ================= -->
+
+    <!-- =====================================================
+         SUBMIT
+    ===================================================== -->
 
     <button
       class="submit-btn"
@@ -505,7 +1332,10 @@
       Submit
     </button>
 
-    <!-- ================= HISTORY / PROFILE ================= -->
+
+    <!-- =====================================================
+         HISTORY / PROFILE
+    ===================================================== -->
 
     <div class="bottom-buttons">
 
@@ -516,6 +1346,7 @@
       >
         History
       </button>
+
 
       <button
         class="nav-btn"
@@ -529,133 +1360,267 @@
 
   </div>
 
+
+  <!-- =====================================================
+       JAVASCRIPT — ORIGINAL WORKFLOW
+  ===================================================== -->
+
   <script>
 
-    const user = JSON.parse(localStorage.getItem("user"));
 
-    /* ================= USER ================= */
+    const user =
+      JSON.parse(
+        localStorage.getItem("user")
+      );
+
+
+    /* =====================================================
+       USER
+    ===================================================== */
 
     if(user){
-      document.getElementById("welcomeText").innerText =
+
+      document.getElementById(
+        "welcomeText"
+      ).innerText =
         `Hey, ${user.id}`;
+
     }
 
-    /* ================= DATE ================= */
 
-    const workDate = document.getElementById("workDate");
-    const dateDisplay = document.getElementById("dateDisplay");
-    const dateEdit = document.getElementById("dateEdit");
+    /* =====================================================
+       DATE
+    ===================================================== */
+
+    const workDate =
+      document.getElementById(
+        "workDate"
+      );
+
+
+    const dateDisplay =
+      document.getElementById(
+        "dateDisplay"
+      );
+
+
+    const dateEdit =
+      document.getElementById(
+        "dateEdit"
+      );
+
 
     function formatDate(dateString){
 
       if(!dateString) return "";
 
-      const date = new Date(dateString + "T00:00:00");
 
-      return date.toLocaleDateString("en-US", {
-        weekday:"long",
-        month:"long",
-        day:"numeric",
-        year:"numeric"
-      });
+      const date =
+        new Date(
+          dateString +
+          "T00:00:00"
+        );
+
+
+      return date.toLocaleDateString(
+        "en-US",
+        {
+          weekday:"long",
+          month:"long",
+          day:"numeric",
+          year:"numeric"
+        }
+      );
 
     }
+
 
     function updateDateDisplay(){
 
-      dateDisplay.innerText = formatDate(workDate.value);
+      dateDisplay.innerText =
+        formatDate(
+          workDate.value
+        );
 
     }
 
+
     workDate.value =
-      new Date().toISOString().split("T")[0];
+      new Date()
+        .toISOString()
+        .split("T")[0];
+
 
     updateDateDisplay();
+
 
     function openDatePicker(event){
 
       if(event){
+
         event.preventDefault();
+
         event.stopPropagation();
+
       }
+
 
       try{
-        if(typeof workDate.showPicker === "function"){
+
+        if(
+          typeof workDate.showPicker ===
+          "function"
+        ){
+
           workDate.showPicker();
+
           return;
+
         }
+
       }catch(error){
-        console.log("showPicker unavailable:", error);
+
+        console.log(
+          "showPicker unavailable:",
+          error
+        );
+
       }
 
+
       workDate.focus();
+
       workDate.click();
 
     }
 
-    // The transparent date input sits over the visible date field,
-    // so clicking the date field directly always invokes the native picker.
-    dateEdit.addEventListener("click", openDatePicker);
 
-    workDate.addEventListener("change", updateDateDisplay);
+    dateEdit.addEventListener(
+      "click",
+      openDatePicker
+    );
 
-    /* ================= LOAD TASKS ================= */
 
-    async function loadTasks() {
+    workDate.addEventListener(
+      "change",
+      updateDateDisplay
+    );
 
-      const user = JSON.parse(localStorage.getItem("user"));
 
-      const res = await fetch(`/tasks/${user.id}`);
+    /* =====================================================
+       LOAD TASKS
+    ===================================================== */
 
-      const tasks = await res.json();
+    async function loadTasks(){
+
+      const user =
+        JSON.parse(
+          localStorage.getItem("user")
+        );
+
+
+      const res =
+        await fetch(
+          `/tasks/${user.id}`
+        );
+
+
+      const tasks =
+        await res.json();
+
 
       console.log(tasks);
 
-      document.getElementById("taskCount").innerText = tasks.length;
-      document.getElementById("taskTotal").innerText = tasks.length;
 
-      const container = document.getElementById("tasks");
+      document.getElementById(
+        "taskCount"
+      ).innerText =
+        tasks.length;
+
+
+      document.getElementById(
+        "taskTotal"
+      ).innerText =
+        tasks.length;
+
+
+      const container =
+        document.getElementById(
+          "tasks"
+        );
+
 
       container.innerHTML = "";
 
-      if (!tasks.length) {
+
+      if(!tasks.length){
 
         container.innerHTML = `
+
           <tr>
-            <td colspan="2" style="
-              height:42px;
-              color:#666;
-              text-align:center;
-            ">
+
+            <td
+              colspan="2"
+              style="
+                height:55px;
+                color:#85898D;
+                text-align:center;
+                background:#FFFFFF;
+                border:1px solid #DDDFE2;
+                border-radius:5px;
+              "
+            >
               No tasks assigned
             </td>
+
           </tr>
+
         `;
 
+
         return;
+
       }
+
 
       tasks.forEach(task => {
 
-        const row = document.createElement("tr");
+        const row =
+          document.createElement(
+            "tr"
+          );
 
-        row.className = "task-card";
+
+        row.className =
+          "task-card";
+
 
         row.innerHTML = `
 
           <td class="project-cell">
-            <span class="task-name">${task.project}</span>
+
+            <span class="task-name">
+              ${task.project}
+            </span>
+
 
             <span
               class="task-task task-meta"
               aria-hidden="true"
-            >${task.task}</span>
+            >
+              ${task.task}
+            </span>
+
 
             <span
               class="task-client task-meta"
               aria-hidden="true"
-            >${task.client}</span>
+            >
+              ${task.client}
+            </span>
+
           </td>
+
 
           <td class="hours-cell">
 
@@ -671,7 +1636,11 @@
                 aria-label="Hours"
               >
 
-              <span class="time-colon">:</span>
+
+              <span class="time-colon">
+                :
+              </span>
+
 
               <input
                 type="number"
@@ -689,72 +1658,141 @@
 
         `;
 
-        container.appendChild(row);
+
+        container.appendChild(
+          row
+        );
 
       });
 
     }
 
-    /* ================= TOTAL DISPLAY ================= */
 
-    function updateTotalDisplay(totalMinutes){
+    /* =====================================================
+       TOTAL DISPLAY
+    ===================================================== */
 
-      const hours = Math.floor(totalMinutes / 60);
-      const minutes = totalMinutes % 60;
+    function updateTotalDisplay(
+      totalMinutes
+    ){
 
-      document.getElementById("totalDisplay").innerText =
-        String(hours).padStart(2,"0") + ":" +
-        String(minutes).padStart(2,"0");
+      const hours =
+        Math.floor(
+          totalMinutes / 60
+        );
+
+
+      const minutes =
+        totalMinutes % 60;
+
+
+      document.getElementById(
+        "totalDisplay"
+      ).innerText =
+
+        String(hours).padStart(
+          2,
+          "0"
+        )
+
+        +
+
+        ":"
+
+        +
+
+        String(minutes).padStart(
+          2,
+          "0"
+        );
 
     }
 
-    /* ================= SUBMIT WORK ================= */
 
-    async function submitWork() {
+    /* =====================================================
+       SUBMIT WORK
+    ===================================================== */
+
+    async function submitWork(){
 
       const btn =
-        document.getElementById("submitBtn");
+        document.getElementById(
+          "submitBtn"
+        );
+
 
       btn.disabled = true;
-      btn.innerText = "Submitting...";
+
+      btn.innerText =
+        "Submitting...";
+
 
       const user =
-        JSON.parse(localStorage.getItem("user"));
+        JSON.parse(
+          localStorage.getItem("user")
+        );
+
 
       const cards =
-        document.querySelectorAll(".task-card");
+        document.querySelectorAll(
+          ".task-card"
+        );
+
 
       let tasks = [];
 
+
       let totalMinutes = 0;
+
 
       cards.forEach(card => {
 
         const taskName =
-          card.querySelector(".task-name")?.innerText || "";
+          card.querySelector(
+            ".task-name"
+          )?.innerText || "";
+
 
         const hrs =
-          Number(card.querySelector(".hrs")?.value || 0);
+          Number(
+            card.querySelector(
+              ".hrs"
+            )?.value || 0
+          );
+
 
         const mins =
-          Number(card.querySelector(".mins")?.value || 0);
+          Number(
+            card.querySelector(
+              ".mins"
+            )?.value || 0
+          );
+
 
         totalMinutes +=
           (hrs * 60) + mins;
 
-        if (taskName) {
+
+        if(taskName){
 
           tasks.push({
 
             project:
-              card.querySelector(".task-name").innerText,
+              card.querySelector(
+                ".task-name"
+              ).innerText,
+
 
             task:
-              card.querySelector(".task-task").innerText,
+              card.querySelector(
+                ".task-task"
+              ).innerText,
 
-            hrs: hrs,
 
-            mins: mins
+            hrs:hrs,
+
+
+            mins:mins
 
           });
 
@@ -762,56 +1800,97 @@
 
       });
 
+
       const note =
-        document.getElementById("dayNote").value;
+        document.getElementById(
+          "dayNote"
+        ).value;
 
-      await fetch('/submit', {
 
-        method: 'POST',
+      await fetch(
+        "/submit",
+        {
 
-        headers: {
-          'Content-Type': 'application/json'
-        },
+          method:"POST",
 
-        body: JSON.stringify({
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
 
-          action: "submit",
 
-          user: user.id,
+          body:JSON.stringify({
 
-          tasks: tasks,
+            action:"submit",
 
-          note: note,
+            user:user.id,
 
-          workDate:
-            document.getElementById("workDate").value
+            tasks:tasks,
 
-        })
+            note:note,
 
-      });
+            workDate:
+              document.getElementById(
+                "workDate"
+              ).value
 
-      document.querySelectorAll(".hrs")
-        .forEach(i => i.value = "");
+          })
 
-      document.querySelectorAll(".mins")
-        .forEach(i => i.value = "");
+        }
+      );
 
-      document.getElementById("dayNote").value = "";
 
-      btn.innerText = "Submitted ✓";
+      document
+        .querySelectorAll(".hrs")
+        .forEach(
+          i => i.value = ""
+        );
 
-      document.getElementById("totalHours").innerText =
-        (totalMinutes / 60).toFixed(1);
 
-      updateTotalDisplay(totalMinutes);
+      document
+        .querySelectorAll(".mins")
+        .forEach(
+          i => i.value = ""
+        );
 
-      alert("Submitted Successfully");
+
+      document.getElementById(
+        "dayNote"
+      ).value = "";
+
+
+      btn.innerText =
+        "Submitted ✓";
+
+
+      document.getElementById(
+        "totalHours"
+      ).innerText =
+        (totalMinutes / 60)
+          .toFixed(1);
+
+
+      updateTotalDisplay(
+        totalMinutes
+      );
+
+
+      alert(
+        "Submitted Successfully"
+      );
 
     }
 
+
+    /* =====================================================
+       INITIAL LOAD
+    ===================================================== */
+
     loadTasks();
 
+
   </script>
+
 
 </body>
 </html>
